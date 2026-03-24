@@ -96,8 +96,7 @@ const Container = styled.div`
       width: 30px;
       cursor: pointer;
       transition: 0.3s ease;
-      transform: ${({ $isopen }) => ($isopen==="true" ? `scale(0.7)` : `scale(1.5)`)}
-        rotate(${({ theme }) => theme.logorotate});
+      transform: ${({ $isopen }) => ($isopen==="true" ? `scale(0.8)` : `scale(1)`)};
       img {
         width: 100%;
       }
@@ -172,7 +171,7 @@ const Main = styled.div`
     transition: all 0.2s;
     z-index: 2;
     transform: ${({ $isopen }) =>
-      $isopen==="true" ? `translateX(162px) rotate(3.142rad)` : `initial`};
+      $isopen==="true" ? `translateX(162px)` : `initial`};
     color: ${(props) => props.theme.text};
   }
 `;

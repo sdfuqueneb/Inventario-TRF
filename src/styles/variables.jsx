@@ -104,7 +104,7 @@ export const variable = {
   iconocheck: BsCalendarCheck,
   colorSecundario: `#DAC1FF`,
   iconoflechaderecha:IoIosArrowForward,
-  colorselector:"#BF94FF",
+  colorselector:"#8198fc",
   rgbafondos:"rgba(210, 110, 249, 0.1)",
   iconoprev:GrFormPrevious,
   icononext:GrCaretNext,

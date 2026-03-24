@@ -5,16 +5,20 @@ import { variable } from "../../styles/variables";
 import { Btnsave } from "../../components/moleculas/Btnsave";
 import {useAuthStore} from "../../store/AuthStore"
 import { Device } from "../../styles/breackpoints";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import carrito from "../../assets/carrito.svg";
 import logo from "../../assets/inventarioslogo.png";
 import { MdOutlineInfo } from "react-icons/md";
 import { ThemeContext } from "../../App";
+import { RegistrarAdmin } from "../organismos/formularios/RegistrarAdmin";
+
 export function LoginTemplate() {
   const { setTheme } = useContext(ThemeContext);
-  setTheme("light");
+  useEffect(() => {
+    setTheme("light");
+  }, []);
   const { signInWithEmail } = useAuthStore();
   const [state, setState] = useState(false);
   const [stateInicio, setStateInicio] = useState(false);
@@ -25,16 +29,21 @@ export function LoginTemplate() {
     handleSubmit,
   } = useForm();
   async function iniciar(data) {
+  try {
     const response = await signInWithEmail({
       correo: data.correo,
       pass: data.pass,
     });
-    if (response) {
-      navigate("/");
-    } else {
-      setStateInicio(true);
-    }
-  }
+      if (response) {
+        navigate("/");
+      } else {
+        setStateInicio(true);
+      }
+      } catch (error) {
+        setStateInicio(true); // Muestra "Datos incorrectos" también en caso de error
+        console.error("Error al iniciar sesión:", error);
+      }
+    } 
 
   return (
     <Container>
@@ -42,22 +51,21 @@ export function LoginTemplate() {
         <img src={logo}></img>
         <span>Transforma</span>
       </div>
+
       <div className="bannerlateral">
         <img src={carrito}></img>
       </div>
 
       <div className="contentCard">
         <div className="card">
+          {
+            state && <RegistrarAdmin setState={() => setState(!state)}/>
+          }
           <Titulo>Transforma</Titulo>
           {stateInicio && (
-            <TextoStateInicio>datos incorrectos</TextoStateInicio>
+            <TextoStateInicio>Datos incorrectos</TextoStateInicio>
           )}
-          <span className="ayuda">
-            {" "}
-            Puedes crear una cuenta nueva ó <br></br>solicitar a tu empleador
-            una. <MdOutlineInfo />
-          </span>
-          <p className="frase">Controla tu inventario.</p>
+          <p className="frase">Inventario</p>
           <form onSubmit={handleSubmit(iniciar)}>
             <InputText icono={<variable.iconoemail />}>
               <input
@@ -68,8 +76,8 @@ export function LoginTemplate() {
                   required: true,
                 })}
               />
-              <label className="form__label">email</label>
-              {errors.correo?.type === "required" && <p>Campo requerido</p>}
+              <label className="form__label">Correo electrónico</label>
+              {errors.correo?.type === "required" && <p>Campo Obligatorio</p>}
             </InputText>
             <InputText icono={<variable.iconopass />}>
               <input
@@ -80,15 +88,21 @@ export function LoginTemplate() {
                   required: true,
                 })}
               />
-              <label className="form__label">pass</label>
-              {errors.pass?.type === "required" && <p>Campo requerido</p>}
+              <label className="form__label">Contraseña</label>
+              {errors.pass?.type === "required" && <p>Campo Obligatorio</p>}
             </InputText>
             <ContainerBtn>
-              <Btnsave titulo="Iniciar" bgcolor="#8e5eff" />
+              <Btnsave 
+                type="submit" 
+                titulo="Iniciar sesión" 
+                bgcolor="#85A1FF" 
+              />
+              
               <Btnsave
+                type="button"
                 funcion={() => setState(!state)}
                 titulo="Crear cuenta"
-                bgcolor="#ffffff"
+                bgcolor="#85A1FF"
               />
             </ContainerBtn>
           </form>
@@ -133,7 +147,7 @@ const Container = styled.div`
   }
 
   .bannerlateral {
-    background-color: #8e5eff;
+    background-color: #5776FF;
     height: 100vh;
     display: flex;
     align-items: center;
@@ -182,18 +196,10 @@ const Container = styled.div`
       }
     }
     .frase {
-      color: #8e5eff;
+      color: #5776FF;
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 30px;
-    }
-    .ayuda {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      color: #8d8d8d;
-      font-size: 15px;
-      font-weight: 500;
     }
     &:hover {
       .contentsvg {
@@ -227,7 +233,8 @@ const ContainerBtn = styled.div`
   margin-top: 15px;
   display: flex;
   justify-content: center;
+  gap: 12px;
 `;
 const TextoStateInicio = styled.p`
-  color: #8e5eff;
+  color: #5776FF;
 `;

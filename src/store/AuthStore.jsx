@@ -9,6 +9,7 @@ export const useAuthStore = create ((set, get) => ({
         if(error){
             return null;
         }
+        return data;
     },
     signOut: async () => { 
         const { error } = await supabase.auth.signOut()

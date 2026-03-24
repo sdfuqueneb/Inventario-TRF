@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { supabase } from "../supabase/supabase.config";
-import { InsertarUsuarios } from "../supabase/crudUsuarios";
+import { InsertarUsuarios, MostrarUsuarios } from "../supabase/crudUsuarios";
 
 export const useUsuariosStore = create ((set, get) => ({
     insertarUsuarioAdmin: async (p) => {
         const { data, error } = await supabase.auth.signUp({
-            email: p.email,
-            password: p.password
+            email: p.correo,
+            password: p.pass
         });
         if (error) {
             console.log("Error Supabase:", error.message);
@@ -15,5 +15,11 @@ export const useUsuariosStore = create ((set, get) => ({
         console.log ("Datos del usuario autenticado registrado ", data);
         const datauser = await InsertarUsuarios ({idauth: data.user.id, fecha_registro: new Date(), tipo_usuario: "admin"});
         return datauser;
+    },
+    idusuario: 0,
+    mostrarUsuarios: async () => {
+        const response = await MostrarUsuarios();
+        set({ idusuario: response.id });
+        return response;
     }
 }))

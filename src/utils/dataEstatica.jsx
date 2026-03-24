@@ -22,8 +22,6 @@ export const DesplegableUser = [
   },
 ];
 
-
-
 //data SIDEBAR
 export const LinksArray = [
   {
