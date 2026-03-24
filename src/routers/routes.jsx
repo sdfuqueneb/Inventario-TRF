@@ -8,6 +8,7 @@ import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { useEmpresaStore } from "../store/EmpresaStore";
+import { ConfiguracionTemplate } from "../pages/Configuracion";
 
 export function MyRoutes() {
     const {user} = UserAuth();
@@ -17,8 +18,12 @@ export function MyRoutes() {
         queryKey:["Mostrar usuarios"], 
         queryFn:mostrarUsuarios
     });
-    const {data: dataempresa} = useQuery({queryKey: ["Mostrar empresa"], 
-        queryFn: () => mostrarEmpresa ({idusuario: idusuario}), enabled: !!data});
+    const { data: dataempresa } = useQuery({
+        queryKey: ["Mostrar empresa", data?.id],
+        queryFn: () => mostrarEmpresa({ idusuario: data.id }),
+        enabled: !!data?.id
+    });
+
     if (isLoading){
         return <SpinnerLoader/>
     }
@@ -30,6 +35,7 @@ export function MyRoutes() {
             <Route path="/login" element={<Login/>}/>
             <Route element={<ProtectedRoute user={user} redirectTo="/login"/>}>
                 <Route path="/" element={<Home/>}/>
+                <Route path="/configurarcuenta" element={<ConfiguracionTemplate/>}/>
             </Route>
         </Routes>
     )

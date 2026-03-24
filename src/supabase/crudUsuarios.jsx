@@ -17,7 +17,8 @@ export const InsertarUsuarios = async (p) => {
 export const MostrarUsuarios = async () => {
     const idAuthSupabase = await ObtenerIdAuthSupabase();
     const { error, data } = await supabase.from("usuarios").select().eq("idauth", idAuthSupabase).maybeSingle();
-    if(data){
-        return data;
+    if (error) {
+        throw error;
     }
+    return data ?? null;
 }

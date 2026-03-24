@@ -40,7 +40,7 @@ export function LoginTemplate() {
         setStateInicio(true);
       }
       } catch (error) {
-        setStateInicio(true); // Muestra "Datos incorrectos" también en caso de error
+        setStateInicio(true);
         console.error("Error al iniciar sesión:", error);
       }
     } 
@@ -53,7 +53,6 @@ export function LoginTemplate() {
       </div>
 
       <div className="bannerlateral">
-        <img src={carrito}></img>
       </div>
 
       <div className="contentCard">

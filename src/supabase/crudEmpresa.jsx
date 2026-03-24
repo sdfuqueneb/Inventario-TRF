@@ -1,14 +1,20 @@
 import { supabase } from "./supabase.config"
-import { ObtenerIdAuthSupabase } from "./globalSupabase";
 
 export const MostrarEmpresa = async (p) => {
-    const idAuthSupabase = await ObtenerIdAuthSupabase();
     const { error, data } = await supabase
     .from("asignar_empresa")
     .select(`empresa(id, nombre, simbolomoneda)`)
-    .eq("idusuario", p.id_usuario)
+    .eq("id_usuario", p.idusuario)
     .maybeSingle();
-    if(data){
-        return data;
+    if (error) {
+        console.error("Error al obtener empresa:", error);
+        throw error;
     }
+    return data ?? null;
+};
+
+export const ContarUsuariosPorEmpresa = async (p) => {
+    const {data, error} = await supabase.rpc ("contar_usuarios_por_empresa", {_id_empresa: p.id_empresa});
+    if (error) throw error;
+    return data ?? 0; 
 }

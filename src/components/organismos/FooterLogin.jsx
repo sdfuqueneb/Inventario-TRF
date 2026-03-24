@@ -7,7 +7,7 @@ export function FooterLogin() {
         <GiPadlock />
         <span>
           Esta es una página segura de Transforma SAS. Si necesitas ayuda, comunícate con nosotros al ____ <br/> 
-          para otros medios a través de <a href="https://www.youtube.com/" target="_blank" className="aranda" style={{ color: "#ff8616" }}>Aranda</a>, Albi o correo electrónico.
+          para otros medios a través de <a href="https://servicios.oadmin.com/USDKV8/#!/login/" target="_blank" className="aranda" style={{ color: "#ff8616" }}>Aranda</a>, Albi o correo electrónico.
         </span>
       </section>
       <section className="derechos">

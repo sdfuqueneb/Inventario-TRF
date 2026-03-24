@@ -1,21 +1,25 @@
 import styled from "styled-components";
 import { variable } from "../../styles/variables";
 import { CardDatosEmpresa } from "../moleculas/CardDatosEmpresa";
+import { useEmpresaStore } from "../../store/EmpresaStore";
 
 export function BannerEmpresa() {
+    const { dataempresa, contadorusuarios } = useEmpresaStore();
+    if (!dataempresa?.empresa) return null;
+    
     return (
         <Container>
             <div className="content-wrapper-context">
                 <span className="titulo">
                     {<variable.iconoempresa/>}
-                    Nombre de empresa
+                    {dataempresa.empresa?.nombre}
                 </span>
                 <div className="content-text">
                     Mejora y tecnología
                 </div>
                 <ContentCards>
-                    <CardDatosEmpresa titulo="Moneda" valor="Col"/>
-                    <CardDatosEmpresa titulo="Usuarios" valor="1"/>
+                    <CardDatosEmpresa titulo="Moneda" valor={dataempresa.empresa.simbolomoneda}/>
+                    <CardDatosEmpresa titulo="Usuarios" valor={contadorusuarios}/>
                 </ContentCards>
             </div>
         </Container>
