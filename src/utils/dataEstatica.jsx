@@ -11,7 +11,7 @@ export const DesplegableUser = [
     tipo: "miperfil",
   },
   {
-    text: "Configuracion",
+    text: "Configuración",
     icono: <variable.iconoSettings/>,
     tipo: "configuracion",
   },
@@ -52,12 +52,12 @@ export const SecondarylinksArray = [
 //temas
 export const TemasData = [
   {
-    icono: "🌞",
+    icono: "☀️",
     descripcion: "light",
    
   },
   {
-    icono: "🌚",
+    icono: "🌙",
     descripcion: "dark",
     
   },
@@ -67,65 +67,66 @@ export const TemasData = [
 export const DataModulosConfiguracion =[
   {
     title:"Productos",
-    subtitle:"registra tus productos",
-    icono:"https://i.ibb.co/85zJ6yG/caja-del-paquete.png",
-    link:"/configurar/productos",
-   
+    subtitle:"Cargar inventario",
+    icono:"https://i.ibb.co/w86RLHz/monitor.png",
+    link:"/configurarcuenta/productos",
+    state: true,
   },
   {
     title:"Personal",
-    subtitle:"ten el control de tu personal",
-    icono:"https://i.ibb.co/5vgZ0fX/hombre.png",
-    link:"/configurar/usuarios",
-   
+    subtitle:"Controla accesos y actividades",
+    icono:"https://i.ibb.co/mrcKqXbr/personal.png",
+    link:"/configurarcuenta/usuarios",
+    state: true,
   },
 
   {
     title:"Tu empresa",
-    subtitle:"configura tus opciones básicas",
-    icono:"https://i.ibb.co/x7mHPgm/administracion-de-empresas.png",
-    link:"/configurar/empresa",
-    
+    subtitle:"Prepara tu espacio de trabajo",
+    icono:"https://i.ibb.co/qFcBK4gd/tr-imagen.png",
+    link:"/configurarcuenta/empresa",
+    state: true,
   },
   {
-    title:"Categoria de productos",
-    subtitle:"asigna categorias a tus productos",
-    icono:"https://i.ibb.co/VYbMRLZ/categoria.png",
-    link:"/configurar/categorias",
-    
+    title:"Categoría de productos",
+    subtitle:"Organizar por categorías",
+    icono:"https://i.ibb.co/1GzK0Qsj/combo.png",
+    link:"/configurarcuenta/categorias",
+    state: true,
   },
   {
     title:"Marca de productos",
-    subtitle:"gestiona tus marcas",
-    icono:"https://i.ibb.co/1qsbCRb/piensa-fuera-de-la-caja.png",
-    link:"/configurar/marca",
-   
+    subtitle:"Control de marcas",
+    icono:"https://i.ibb.co/XrCdZMWL/lenovo.png",
+    link:"/configurarcuenta/marca",
+    state: true,
   },
 
 ]
 //tipo usuario
 export const TipouserData = [
   {
-    descripcion: "empleado",
-    icono: "🪖",
+    descripcion: "Colaborador",
+    icono: "👨‍💼",
   },
   {
-    descripcion: "administrador",
-    icono: "👑",
+    descripcion: "Administrador",
+    icono: "👩‍💻",
   },
 ];
+
 //tipodoc
 export const TipoDocData = [
   {
-    descripcion: "Dni",
-    icono: "🪖",
+    descripcion: "CC",
+    icono: "🪪",
   },
   {
-    descripcion: "Libreta electoral",
-    icono: "👑",
+    descripcion: "Pasaporte",
+    icono: "📖",
   },
   {
     descripcion: "Otros",
-    icono: "👑",
+    icono: "👤",
   },
 ];

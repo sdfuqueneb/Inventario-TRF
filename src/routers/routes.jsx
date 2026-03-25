@@ -8,7 +8,8 @@ import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { useEmpresaStore } from "../store/EmpresaStore";
-import { ConfiguracionTemplate } from "../pages/Configuracion";
+import { MarcaTemplate } from "../components/templates/MarcaTemplate";
+import { Configuracion } from "../pages/Configuracion";
 
 export function MyRoutes() {
     const {user} = UserAuth();
@@ -35,7 +36,8 @@ export function MyRoutes() {
             <Route path="/login" element={<Login/>}/>
             <Route element={<ProtectedRoute user={user} redirectTo="/login"/>}>
                 <Route path="/" element={<Home/>}/>
-                <Route path="/configurarcuenta" element={<ConfiguracionTemplate/>}/>
+                <Route path="/configurarcuenta" element={<Configuracion/>}/>
+                <Route path="/configurarcuenta/marca" element={<MarcaTemplate/>}/>
             </Route>
         </Routes>
     )
