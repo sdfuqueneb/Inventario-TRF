@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo  } from "react";
 import { supabase } from "../supabase/supabase.config";
 
 const AuthContext = createContext();
@@ -17,12 +17,13 @@ export const AuthContextProvider= ({children}) => {
             }
         );
         return () => {
-            authListener.subscription;
+            authListener.subscription.unsubscribe();
         };
     }, [])
-
+    const value = useMemo(() => ({ user }), [user]); 
+    
     return(
-        <AuthContext.Provider value={{user}}>
+        <AuthContext.Provider value={value}> 
             {children}
         </AuthContext.Provider>
     )

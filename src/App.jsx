@@ -1,7 +1,7 @@
 import { MyRoutes } from "./routers/routes"
 import { AuthContextProvider } from "./context/AuthContext";
 import styled, { ThemeProvider } from "styled-components";
-import { createContext, useState } from "react";
+import { createContext, useState, useCallback, useMemo } from "react";
 import { Light, Dark } from "./styles/themes";
 import { Device } from "./styles/breackpoints";
 import { Sidebar } from "./components/organismos/sidebar/Sidebar";
@@ -18,17 +18,19 @@ function App() {
   const themeStyle = theme === "light" ? Light : Dark;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const {pathname} = useLocation();
+  const handleSidebar = useCallback(() => setSidebarOpen(prev => !prev), []);
+  const themeContextValue = useMemo(() => ({ theme, setTheme }), [theme]);
 
   return (
     <>
-      <ThemeContext.Provider value={{theme, setTheme}}>
+      <ThemeContext.Provider value={themeContextValue}>
         <ThemeProvider theme={themeStyle}>
           <AuthContextProvider>
             {
               pathname!="/login" ? (
                 <Container className={sidebarOpen ? "active" : ""}>
                   <section className="ContentSidebar">
-                    <Sidebar state={sidebarOpen} setState={() => setSidebarOpen(!sidebarOpen)}/>
+                    <Sidebar state={sidebarOpen} setState={handleSidebar} />
                   </section>
                   <section className="ContentMenuHamburguesa">
                     <MenuHamburguesa/>

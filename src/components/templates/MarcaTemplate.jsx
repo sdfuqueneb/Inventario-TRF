@@ -1,15 +1,19 @@
 import styled from "styled-components";
 import { Btnsave } from "../../components/moleculas/Btnsave";
+import { TablaMarca } from "../../components/organismos/Tablas/TablaMarca";
 import {useAuthStore} from "../../store/AuthStore"
-import { Header } from "../../components/organismos/Header";
-import { useState } from "react";
+import { Header } from "..//organismos/Header";
+import { useState, useCallback, useMemo } from "react";
 
-export function MarcaTemplate() {
+export function MarcaTemplate({data}) {
     const [state, setState] = useState(false);
+    const handleSetState = useCallback(() => setState(prev => !prev), []);
+    const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
+
     return (
     <Container>
         <header className="header">
-            <Header stateConfig = {{ state: state, setState: () => setState(!state) }} />
+            <Header stateConfig={stateConfig} />
         </header>
         <section className="area1">
 
@@ -18,7 +22,7 @@ export function MarcaTemplate() {
 
         </section>
         <section className="main">
-
+            <TablaMarca data={data}/>
         </section>
     </Container>);
 }
@@ -27,7 +31,7 @@ const Container = styled.div`
     height: 100vh;    
     width: 100%;
     background-color: ${(props) => props.theme.bgtotal};
-    color: ${(theme) => theme.text};
+    color: ${({ theme }) => theme.text};
     display: grid;
     padding: 15px;
     grid-template:
