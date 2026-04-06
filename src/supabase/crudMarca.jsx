@@ -19,7 +19,7 @@ export async function MostrarMarca(p) {
       .select()
       .eq("id_empresa", p.id_empresa)
       .order("id", { ascending: true });
-    return data;
+    return data ?? [];
   
 }
 export async function EliminarMarca(p) {
@@ -49,5 +49,5 @@ export async function BuscarMarca(p) {
     .select()
     .eq("id_empresa", p.id_empresa)
     .ilike("descripcion","%"+p.descripcion+"%")
-    return data;
+    return data ?? [];
 }

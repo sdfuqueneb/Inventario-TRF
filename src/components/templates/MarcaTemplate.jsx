@@ -4,19 +4,38 @@ import { TablaMarca } from "../../components/organismos/Tablas/TablaMarca";
 import {useAuthStore} from "../../store/AuthStore"
 import { Header } from "..//organismos/Header";
 import { useState, useCallback, useMemo } from "react";
+import { RegistrarMarca } from "../organismos/formularios/RegistrarMarca";
+import { Btnfiltro } from "../moleculas/Btnfiltro";
+import { ContentFiltro } from "../atomos/ContentFiltro";
+import { Title } from "../atomos/Title";
+import { variable } from "../../styles/variables";
 
 export function MarcaTemplate({data}) {
     const [state, setState] = useState(false);
+    const [dataSelect, setDataSelect] = useState("");
+    const [action, setAction] = useState("");
+    const [openRegistro, SetopenRegistro] = useState(false);
+
     const handleSetState = useCallback(() => setState(prev => !prev), []);
     const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
 
     return (
     <Container>
+        {openRegistro && (
+            <RegistrarMarca
+                dataSelect={dataSelect}
+                accion={action}
+                onClose={() => SetopenRegistro(false)}
+            />
+        )}
         <header className="header">
             <Header stateConfig={stateConfig} />
         </header>
         <section className="area1">
-
+            <ContentFiltro>
+                <Title>Marcas</Title>
+                <Btnfiltro bgcolor="#F6F3F3" textcolor="#353535" icono={<variable.agregar/>}/>
+            </ContentFiltro>
         </section>
         <section className="area2">
 

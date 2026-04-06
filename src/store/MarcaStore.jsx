@@ -35,5 +35,6 @@ export const useMarcaStore = create((set, get) => ({
     buscarMarca: async (p) => {
         const response = await BuscarMarca(p);
         set({datamarca: response});
+        return response ?? [];
     }
  }));

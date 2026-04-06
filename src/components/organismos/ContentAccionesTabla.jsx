@@ -5,8 +5,8 @@ import { variable } from "../../styles/variables"
 export function ContentAccionesTabla({funcionEditar, funcionEliminar}) {
     return(
         <Container>
-            <AccionTabla funcion={funcionEditar} fontsize="18px" color="7d7d7d" icono={<variable.iconeditarTabla/>}/>
-            <AccionTabla funcion={funcionEliminar} fontsize="18px" color="7d7d7d" icono={<variable.iconeliminarTabla/>}/>
+            <AccionTabla funcion={funcionEditar} fontsize="18px" color="#7d7d7d" icono={<variable.iconeditarTabla/>}/>
+            <AccionTabla funcion={funcionEliminar} fontsize="18px" color="#ff5151" icono={<variable.iconeliminarTabla/>}/>
         </Container>
     )
 }
