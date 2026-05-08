@@ -25,56 +25,57 @@ export function ToggleTema() {
 
 const Container = styled.div`
   display: flex;
-  justify-content: flex;
+  justify-content: flex-start; 
   align-items: center;
-  margin-left: 5px;
+  padding-left: 15px; 
+  width: 100%;
 
-  /* switch */
   .switch {
-    font-size: 17px;
+    font-size: 14px;
     position: relative;
     display: inline-block;
     width: 3.5em;
-    height: 2em;
+    height: 1.8em;
   }
 
-  /* hide checkbox */
   .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
 
-  /* slider */
   .slider {
-    --background: ${({ theme }) => theme.bgToggle || "#633af7"};
+    --background: #012452; 
     position: absolute;
     cursor: pointer;
     inset: 0;
     background-color: var(--background);
-    transition: 0.5s;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .slider:before {
     position: absolute;
     content: "";
-    height: 1.4em;
-    width: 1.4em;
+    height: 1.2em;
+    width: 1.2em;
     border-radius: 50%;
-    left: 10%;
-    bottom: 15%;
-    box-shadow: inset 8px -4px 0px 0px #fff000;
+    left: 0.3em;
+    bottom: 0.25em;
+    box-shadow: inset 5px -2px 0px 0px #EFF1F3; 
     background: var(--background);
-    transition: 0.5s;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
   }
 
   input:checked + .slider {
-    background-color: ${({ theme }) => theme.bgToggleActive || "#522ba7"};
+    background-color: #2EC971; 
   }
 
   input:checked + .slider:before {
-    transform: translateX(100%);
-    box-shadow: inset 15px -4px 0px 15px #fff000;
+    transform: translateX(1.7em);
+    box-shadow: inset 15px -4px 0px 15px #FFD700; 
+    background: #FFD700;
   }
 `;

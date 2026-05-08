@@ -22,36 +22,39 @@ import { SlGraph } from "react-icons/sl";
 import { BsBarChartLine } from "react-icons/bs";
 import { AiOutlineCalculator } from "react-icons/ai";
 import { BsCalendarCheck } from "react-icons/bs";
-import {IoIosArrowForward} from "react-icons/io"
-import {GrFormPrevious,GrCaretNext} from "react-icons/gr"
-import {MdOutlineBorderAll} from "react-icons/md"
+import { IoIosArrowForward } from "react-icons/io"
+import { GrFormPrevious, GrCaretNext } from "react-icons/gr"
+import { MdOutlineBorderAll } from "react-icons/md"
 import { MdAlternateEmail } from "react-icons/md";
-import {RiLockPasswordLine} from "react-icons/ri"
-import {MdDriveFileRenameOutline} from "react-icons/md"
-import {RiStockLine} from "react-icons/ri"
-import {BiBellMinus} from "react-icons/bi"
-import {AiOutlineBarcode} from "react-icons/ai"
-import {DiCodepen} from "react-icons/di"
-import {FaRegMoneyBillAlt} from "react-icons/fa"
-import {CiMoneyBill} from "react-icons/ci"
-import {TbBrandBitbucket} from "react-icons/tb"
-import {MdOutlineCategory} from "react-icons/md"
-import {FaBuilding} from "react-icons/fa"
-import {TbReportAnalytics} from "react-icons/tb"
+import { RiLockPasswordLine } from "react-icons/ri"
+import { MdDriveFileRenameOutline } from "react-icons/md"
+import { RiStockLine } from "react-icons/ri"
+import { BiBellMinus } from "react-icons/bi"
+import { AiOutlineBarcode } from "react-icons/ai"
+import { DiCodepen } from "react-icons/di"
+import { FaRegMoneyBillAlt } from "react-icons/fa"
+import { CiMoneyBill } from "react-icons/ci"
+import { TbBrandBitbucket } from "react-icons/tb"
+import { MdOutlineCategory } from "react-icons/md"
+import { FaBuilding } from "react-icons/fa"
+import { TbReportAnalytics } from "react-icons/tb"
+
 export const variable = {
-  iconoreportes : TbReportAnalytics,
-  iconoempresa:FaBuilding,
-  iconocategorias:MdOutlineCategory,
-  iconomarca:TbBrandBitbucket,
-  iconoprecioventa:FaRegMoneyBillAlt,
-  iconopreciocompra:CiMoneyBill,
-  iconocodigointerno:DiCodepen,
-  iconocodigobarras:AiOutlineBarcode,
-  iconostockminimo:BiBellMinus,
-  iconostock:RiStockLine,
-  icononombre:MdDriveFileRenameOutline,
-  iconoemail:MdAlternateEmail,
-  iconopass:RiLockPasswordLine,
+  iconoreportes: TbReportAnalytics,
+  iconoempresa: FaBuilding,
+  iconocategorias: MdOutlineCategory,
+  iconomarca: TbBrandBitbucket,
+  iconoprecioventa: FaRegMoneyBillAlt,
+  iconopreciocompra: CiMoneyBill,
+  iconocodigointerno: DiCodepen,
+  iconocodigobarras: AiOutlineBarcode,
+  iconostockminimo: BiBellMinus,
+  iconostock: RiStockLine,
+  icononombre: MdDriveFileRenameOutline,
+  iconoemail: MdAlternateEmail,
+  iconopass: RiLockPasswordLine,
+  
+  // Estructura
   sidebarWidth: `300px`,
   sidebarWidthInitial: `10vw`,
   smSpacing: `8px`,
@@ -59,32 +62,40 @@ export const variable = {
   lgSpacing: `24px`,
   xlSpacing: `32px`,
   xxlSpacing: `48px`,
-  borderRadius: `6px`,
+  borderRadius: `8px`, 
 
   paletacolores: CiPalette,
   emoji: BsEmojiLaughing,
   iconeditarTabla: RiEditLine,
   iconeliminarTabla: RiDeleteBin2Line,
-  colorIngresos: `#53B257`,
-  colorbgingresos: `#e6ffe7`,
-  colorGastos: `#fe6156`,
-  colorbgGastos: `#fbcbc9`,
+
+  colorIngresos: `#2EC971`,     
+  colorbgingresos: `rgba(46, 201, 113, 0.15)`,
+  colorGastos: `#F54E41`,         
+  colorbgGastos: `rgba(245, 78, 65, 0.15)`,
   colorError: `#F54E41`,
-  colorExito: `#9046FF`,
+  colorExito: `#2EC971`,          
+
   bpmaggie: `15em`,
   bplisa: `30em`,
   bpbart: `48em`,
   bpmarge: `62em`,
   bphomer: `75em`,
-  colorPrincipal: `#00F34A`,
-  boxshadowGray: `0px 10px 15px -3px rgba(0,0,0,0.1)`,
+
+  colorPrincipal: `#2EC971`,     
+  colorSecundario: `#012452`,   
+  colorselector: "#2EC971",       
+  rgbafondos: "rgba(1, 36, 82, 0.05)", 
+  
+  boxshadowGray: `0px 4px 12px rgba(0,0,0,0.08)`,
+
   iconoFlechabajo: IoIosArrowDown,
   iconocorona: RiVipCrownFill,
   iconoUser: BiUserCircle,
   iconoSettings: RiSettings3Line,
   iconoCerrarSesion: MdExitToApp,
   iconofotovacia: FcPicture,
-  verde: `#53B257`,
+  verde: `#2EC971`,
   rojo: `#F54E41`,
   agregar: CgMathPlus,
   iconosupabase: TbBrandSupabase,
@@ -102,11 +113,8 @@ export const variable = {
   iconobars: BsBarChartLine,
   iconocalculadora: AiOutlineCalculator,
   iconocheck: BsCalendarCheck,
-  colorSecundario: `#DAC1FF`,
-  iconoflechaderecha:IoIosArrowForward,
-  colorselector:"#8198fc",
-  rgbafondos:"rgba(210, 110, 249, 0.1)",
-  iconoprev:GrFormPrevious,
-  icononext:GrCaretNext,
-  iconotodos:MdOutlineBorderAll
+  iconoflechaderecha: IoIosArrowForward,
+  iconoprev: GrFormPrevious,
+  icononext: GrCaretNext,
+  iconotodos: MdOutlineBorderAll
 };

@@ -21,7 +21,7 @@ export function SidebarCard() {
         <div className="contentBtn">
           <Btnsave
             titulo="Cerrar"
-            bgcolor="#5776FF"
+            bgcolor={variable.colorPrincipal} 
             funcion={handleLogout}
           />
         </div>
@@ -36,24 +36,14 @@ const Container = styled.div`
   text-align: center;
   position: relative;
 
-  .icon {
-    display: flex;       
-    align-items: center;
-    justify-content: center;
-    line-height: 0;         
-    flex-shrink: 0;
-  svg {              
-    display: block;
-  }}
-
   .cardContent {
     position: relative;
     padding: 1.5rem 1rem 1rem;
-    background: linear-gradient(135deg, #5776ff22, #997ff722);
-    border: 1px solid #5776ff33;
+    background: linear-gradient(135deg, ${(props) => props.theme.text}11, ${(props) => props.theme.primary}11);
+    border: 1px solid ${(props) => props.theme.text}22;
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(87, 118, 255, 0.15);
+    box-shadow: ${variable.boxshadowGray};
 
     &::before {
       content: "";
@@ -61,23 +51,22 @@ const Container = styled.div`
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #5776ff, #997ff7);
+      height: 4px;
+      background: ${(props) => props.theme.primary};
       border-radius: 14px 14px 0 0;
     }
 
     h3 {
       font-size: 1.1rem;
-      margin-top: 1rem;
-      padding: 0.5rem 0 0.25rem;
+      margin-top: 0.5rem;
       font-weight: 800;
-      color: ${(props) => props.theme.text || "#000"};
+      color: ${(props) => props.theme.text};
     }
 
     .subtitle {
-      font-size: 0.8rem;
-      color: ${(props) => props.theme.text2 || "#666"};
-      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: ${(props) => props.theme.colorSubtitle || "#666"};
+      margin-bottom: 1.2rem;
     }
 
     .contentBtn {

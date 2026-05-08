@@ -5,7 +5,7 @@ import MoonLoader from "react-spinners/MoonLoader";
 export function SpinnerLoader() {
   return (
     <Container>
-        <MoonLoader color="#7ba5ff" size={100}/>
+        <MoonLoader color="#2EC971" size={100}/>
     </Container>
   );
 }

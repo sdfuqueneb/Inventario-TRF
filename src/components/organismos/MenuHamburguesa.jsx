@@ -100,7 +100,7 @@ const HamburguerMenu = styled.span`
     right: 0;
     height: 4px;
     border-radius: calc(4px / 2);
-    background: #7b52b9;
+    background: #2EC971;
     color: inherit;
     opacity: 1;
     transition: none 0.35s cubic-bezier(.5,-0.35,.35,1.5) 0s;

@@ -17,7 +17,6 @@ export function Sidebar({ state, setState }) {
           <div className="imgcontent">
             <img src={variable.logo} />
           </div>
-          <h2>Transforma</h2>
         </div>
         {LinksArray.map(({ icon, label, to }) => (
           <div
@@ -88,12 +87,12 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 60px;
+    padding-bottom: 30px;
     .imgcontent {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 30px;
+      width: 200px;
       cursor: pointer;
       transition: 0.3s ease;
       transform: ${({ $isopen }) => ($isopen==="true" ? `scale(0.8)` : `scale(1)`)};

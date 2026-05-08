@@ -9,7 +9,7 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import carrito from "../../assets/carrito.svg";
-import logo from "../../assets/inventarioslogo.png";
+import ISO from "../../assets/ISO.png";
 import { MdOutlineInfo } from "react-icons/md";
 import { ThemeContext } from "../../App";
 import { RegistrarAdmin } from "../organismos/formularios/RegistrarAdmin";
@@ -48,8 +48,7 @@ export function LoginTemplate() {
   return (
     <Container>
       <div className="contentLogo">
-        <img src={logo}></img>
-        <span>Transforma</span>
+        <img src={ISO}></img>
       </div>
 
       <div className="bannerlateral">
@@ -60,7 +59,7 @@ export function LoginTemplate() {
           {
             state && <RegistrarAdmin setState={() => setState(!state)}/>
           }
-          <Titulo>Transforma</Titulo>
+          <Titulo>Transform@</Titulo>
           {stateInicio && (
             <TextoStateInicio>Datos incorrectos</TextoStateInicio>
           )}
@@ -94,14 +93,14 @@ export function LoginTemplate() {
               <Btnsave 
                 type="submit" 
                 titulo="Iniciar sesión" 
-                bgcolor="#85A1FF" 
+                bgcolor="rgb(46, 201, 113)" 
               />
               
               <Btnsave
                 type="button"
                 funcion={() => setState(!state)}
                 titulo="Crear cuenta"
-                bgcolor="#85A1FF"
+                bgcolor="rgb(46, 201, 113)"
               />
             </ContainerBtn>
           </form>
@@ -119,7 +118,8 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: #262626;
+  background-color: #0F3D2E;
+
   @media ${Device.tablet} {
     grid-template-columns: 1fr 2fr;
   }
@@ -130,10 +130,10 @@ const Container = styled.div`
     display: flex;
     left: 15px;
     align-items: center;
-    color: #fff;
+    color: #EFF1F3;
 
     img {
-      width: 50px;
+      width: 300px;
     }
   }
   .cuadros {
@@ -146,7 +146,7 @@ const Container = styled.div`
   }
 
   .bannerlateral {
-    background-color: #5776FF;
+    background-color: #012452;
     height: 100vh;
     display: flex;
     align-items: center;
@@ -157,7 +157,7 @@ const Container = styled.div`
   }
   .contentCard {
     grid-column: 2;
-    background-color: #ffffff;
+    background-color: #EFF1F3;
     background-size: cover;
     z-index: 100;
     position: relative;
@@ -189,13 +189,12 @@ const Container = styled.div`
       justify-content: center;
 
       img {
-        width: 40%;
-
+        width: 60%;
         animation: flotar 1.5s ease-in-out infinite alternate;
       }
     }
     .frase {
-      color: #5776FF;
+      color: #0F3D2E;
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 30px;
@@ -234,6 +233,11 @@ const ContainerBtn = styled.div`
   justify-content: center;
   gap: 12px;
 `;
+
 const TextoStateInicio = styled.p`
-  color: #5776FF;
+  color: ${variable.rojo};
+  background-color: rgba(245, 78, 65, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
 `;

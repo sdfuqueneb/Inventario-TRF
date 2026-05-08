@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export function Btnsave({ funcion, titulo, bgcolor = "#879dff79", url, type = "button" }) {
+export function Btnsave({ funcion, titulo, bgcolor = "#87ff9779", url, type = "button" }) {
   return (
     <Container
       as={url ? "a" : "button"}
@@ -34,7 +34,7 @@ export function Btnsave({ funcion, titulo, bgcolor = "#879dff79", url, type = "b
 }
 
 const Container = styled.a`
-  background: #879dff79;
+  background: #60d4498c;
   width: 196px;
   height: 56px;
   border-radius: 16px;
