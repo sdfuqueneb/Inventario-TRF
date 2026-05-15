@@ -86,7 +86,7 @@ export function RegistrarAdmin({ setState }) {
                 type = "submit"
                 icono={<variable.iconoguardar />}
                 titulo="Guardar"
-                bgcolor="#85A1FF"  
+                bgcolor="#2ec971"   
             />
           </div>
           {error && <p style={{ color: "red" }}>Error al registrar usuario.</p>}

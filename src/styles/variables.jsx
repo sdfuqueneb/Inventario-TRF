@@ -13,6 +13,7 @@ import { FaReact } from "react-icons/fa";
 import { BsArrowDown, BsArrowUpShort } from "react-icons/bs";
 import { FaBalanceScale } from "react-icons/fa";
 import logo from "../assets/inventarioslogo.png";
+import logo_b from "../assets/inventarioslogo_blanco.png";
 import { BsGoogle } from "react-icons/bs";
 import { RiCloseLine } from "react-icons/ri";
 import { BiSave } from "react-icons/bi";
@@ -24,7 +25,7 @@ import { AiOutlineCalculator } from "react-icons/ai";
 import { BsCalendarCheck } from "react-icons/bs";
 import { IoIosArrowForward } from "react-icons/io"
 import { GrFormPrevious, GrCaretNext } from "react-icons/gr"
-import { MdOutlineBorderAll } from "react-icons/md"
+import { TiThSmall } from "react-icons/ti";
 import { MdAlternateEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri"
 import { MdDriveFileRenameOutline } from "react-icons/md"
@@ -34,16 +35,17 @@ import { AiOutlineBarcode } from "react-icons/ai"
 import { DiCodepen } from "react-icons/di"
 import { FaRegMoneyBillAlt } from "react-icons/fa"
 import { CiMoneyBill } from "react-icons/ci"
-import { TbBrandBitbucket } from "react-icons/tb"
+import { TbBrandBilibili } from "react-icons/tb";
 import { MdOutlineCategory } from "react-icons/md"
 import { FaBuilding } from "react-icons/fa"
 import { TbReportAnalytics } from "react-icons/tb"
+import { RiSearchLine } from "react-icons/ri";
 
 export const variable = {
   iconoreportes: TbReportAnalytics,
   iconoempresa: FaBuilding,
   iconocategorias: MdOutlineCategory,
-  iconomarca: TbBrandBitbucket,
+  iconomarca: TbBrandBilibili,
   iconoprecioventa: FaRegMoneyBillAlt,
   iconopreciocompra: CiMoneyBill,
   iconocodigointerno: DiCodepen,
@@ -104,6 +106,7 @@ export const variable = {
   flechaarribalarga: BsArrowUpShort,
   balance: FaBalanceScale,
   logo: logo,
+  logo_b: logo_b,
   iconogoogle: BsGoogle,
   iconocerrar: RiCloseLine,
   iconoguardar: BiSave,
@@ -116,5 +119,6 @@ export const variable = {
   iconoflechaderecha: IoIosArrowForward,
   iconoprev: GrFormPrevious,
   icononext: GrCaretNext,
-  iconotodos: MdOutlineBorderAll
+  iconotodos: TiThSmall,
+  iconobuscar: RiSearchLine
 };

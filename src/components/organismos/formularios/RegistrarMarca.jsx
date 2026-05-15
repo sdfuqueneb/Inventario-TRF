@@ -8,7 +8,7 @@ import { ConvertirCapitalize } from "../../../utils/Conversiones";
 import { useForm } from "react-hook-form";
 import { useEmpresaStore } from "../../../store/EmpresaStore";
 export function RegistrarMarca({ onClose, dataSelect, accion }) {
-  const { insertarMarca, editarMarca } = useMarcaStore();
+  const { InsertarMarca, editarMarca } = useMarcaStore();
   const { dataempresa } = useEmpresaStore();
   const {
     register,
@@ -26,9 +26,9 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
     } else {
       const p = {
         _descripcion:ConvertirCapitalize( data.nombre),
-        _idempresa: dataempresa.id,
+        _idempresa: dataempresa?.empresa?.id,
       };
-      await insertarMarca(p);
+      await InsertarMarca(p);
       onClose();
     }
   }
@@ -57,7 +57,7 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
               <InputText icono={<variable.iconomarca />}>
                 <input
                   className="form__field"
-                  defaultValue={dataSelect.descripcion}
+                  defaultValue={dataSelect?.descripcion ?? ""}
                   type="text"
                   placeholder=""
                   {...register("nombre", {
@@ -73,7 +73,8 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
               <Btnsave
                 icono={<variable.iconoguardar />}
                 titulo="Guardar"
-                bgcolor="#ef552b"
+                bgcolor="#2ec971"
+                type="submit" 
               />
             </div>
           </section>

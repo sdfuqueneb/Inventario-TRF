@@ -1,32 +1,30 @@
 import styled from "styled-components";
 
-export function Btnsave({ funcion, titulo, bgcolor = "#87ff9779", url, type = "button" }) {
+export function Btnsave({ funcion, titulo, bgcolor = "#87ff9779", url, type = "button", icono }) {
   return (
     <Container
       as={url ? "a" : "button"}
-      type={url ? undefined : type}
+      type={url ? undefined : type}  
       onClick={funcion}
       href={url}
       target={url ? "_blank" : undefined}
       rel={url ? "noreferrer" : undefined}
     >
       <div className="slider" style={{ background: bgcolor }}>
-        <svg
-          className="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1024 1024"
-          height="25px"
-          width="25px"
-        >
-          <path
-            d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
-            fill="#ffffff"
-          />
-          <path
-            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
-            fill="#ffffff"
-          />
-        </svg>
+        {icono ? (                 
+          <span className="icon">{icono}</span>
+        ) : (
+          <svg                       
+            className="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1024 1024"
+            height="25px"
+            width="25px"
+          >
+            <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z" fill="#ffffff"/>
+            <path d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z" fill="#ffffff"/>
+          </svg>
+        )}
       </div>
       <span className="text">{titulo}</span>
     </Container>

@@ -1,83 +1,188 @@
 import styled from "styled-components";
-import { Btnsave } from "../../components/moleculas/Btnsave";
 import { TablaMarca } from "../../components/organismos/Tablas/TablaMarca";
-import {useAuthStore} from "../../store/AuthStore"
-import { Header } from "..//organismos/Header";
+import { Header } from "../organismos/Header";
 import { useState, useCallback, useMemo } from "react";
 import { RegistrarMarca } from "../organismos/formularios/RegistrarMarca";
-import { Btnfiltro } from "../moleculas/Btnfiltro";
-import { ContentFiltro } from "../atomos/ContentFiltro";
-import { Title } from "../atomos/Title";
 import { variable } from "../../styles/variables";
+import { useMarcaStore } from "../../store/MarcaStore";
+import { useEmpresaStore } from "../../store/EmpresaStore";
 
-export function MarcaTemplate({data}) {
+export function MarcaTemplate({ data }) {
     const [state, setState] = useState(false);
-    const [dataSelect, setDataSelect] = useState("");
+    const [dataSelect, setDataSelect] = useState({});
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
+    const [busqueda, setBusqueda] = useState("");
+    const nuevoRegistro = () => {
+        SetopenRegistro(!openRegistro);
+        setAction("Nuevo");
+        setDataSelect([]);
+    };
+    const { buscarMarca, datamarca } = useMarcaStore();
+    const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
     const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
 
-    return (
-    <Container>
-        {openRegistro && (
-            <RegistrarMarca
-                dataSelect={dataSelect}
-                accion={action}
-                onClose={() => SetopenRegistro(false)}
-            />
-        )}
-        <header className="header">
-            <Header stateConfig={stateConfig} />
-        </header>
-        <section className="area1">
-            <ContentFiltro>
-                <Title>Marcas</Title>
-                <Btnfiltro bgcolor="#F6F3F3" textcolor="#353535" icono={<variable.agregar/>}/>
-            </ContentFiltro>
-        </section>
-        <section className="area2">
+    const handleBuscar = (e) => {
+        const valor = e.target.value;
+        setBusqueda(valor);
+        buscarMarca({ id_empresa: dataempresa?.empresa?.id, descripcion: valor });
+    };
 
-        </section>
-        <section className="main">
-            <TablaMarca data={data}/>
-        </section>
-    </Container>);
+    return (
+        <Container>
+            {openRegistro && (
+                <RegistrarMarca
+                    dataSelect={dataSelect}
+                    accion={action}
+                    onClose={() => SetopenRegistro(false)}
+                />
+            )}
+
+            <header className="header">
+                <Header stateConfig={stateConfig} />
+            </header>
+
+            <div className="page-content">
+                <TopBar>
+                    <PageTitle>Marcas</PageTitle>
+                    <BtnAgregar 
+                    funcion = {nuevoRegistro}
+                    onClick={() => {
+                        setDataSelect({});
+                        setAction("Registrar");
+                        SetopenRegistro(true);
+                    }}>
+                        <variable.agregar />
+                        Nueva marca
+                    </BtnAgregar>
+                </TopBar>
+
+                <SearchBar>
+                    <span className="search-icon">
+                        <variable.iconobuscar />
+                    </span>
+                    <input
+                        type="text"
+                        placeholder="Buscar marca..."
+                        value={busqueda}
+                        onChange={handleBuscar}
+                    />
+                </SearchBar>
+                <TableWrapper>
+                    <TablaMarca
+                        data={data}
+                        onEditar={(marca) => {
+                            setDataSelect(marca);
+                            setAction("Editar");
+                            SetopenRegistro(true);
+                        }}
+                    />
+                </TableWrapper>
+            </div>
+        </Container>
+    );
 }
 
 const Container = styled.div`
-    height: 100vh;    
+    height: 100vh;
     width: 100%;
-    background-color: ${(props) => props.theme.bgtotal};
+    background-color: ${({ theme }) => theme.bgtotal};
     color: ${({ theme }) => theme.text};
     display: grid;
-    padding: 15px;
-    grid-template:
-        "header" 100px
-        "area1" 100px
-        "area2" 100px
-        "main" auto;
-    .header{
-        grid-area: header;
-        background-color: #5980ff;
+    grid-template-rows: 70px 1fr;
+    overflow: hidden;
+
+    .header { grid-row: 1; }
+
+    .page-content {
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px 32px;
+        overflow-y: auto;
+    }
+`;
+
+const TopBar = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+`;
+
+const PageTitle = styled.h1`
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    color: ${({ theme }) => theme.text};
+`;
+
+const BtnAgregar = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: ${({ theme }) => theme.bg5};
+    color: ${({ theme }) => theme.bg};
+    border: none;
+    border-radius: 10px;
+    padding: 9px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+
+    svg { font-size: 18px; }
+
+    &:hover  { opacity: 0.88; }
+    &:active { transform: scale(0.97); }
+`;
+
+const SearchBar = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: ${({ theme }) => theme.bg3};
+    border: 0.5px solid ${({ theme }) => theme.bg2};
+    border-radius: 10px;
+    padding: 8px 14px;
+    width: 100%;
+    max-width: 400px;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: ${({ theme }) => theme.bg5};
+    }
+
+    .search-icon {
+        color: ${({ theme }) => theme.bg5};
         display: flex;
         align-items: center;
+        svg { font-size: 18px; }
     }
-    .area1{
-        grid-area: area1;
-        background-color: #59f9ff;
-        display: flex;
-        align-items: center;
+
+    input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 14px;
+        color: ${({ theme }) => theme.text};
+
+        &::placeholder {
+            color: ${({ theme }) => theme.text}88;
+        }
     }
-    .area2{
-        grid-area: area2;
-        background-color: #59ff7d;
-        display: flex;
-        align-items: center;
-    }
-    .main{
-        grid-area: main;
-        background-color: #f959ff;
-    }
-`
+`;
+
+const TableWrapper = styled.div`
+    width: 100%;
+    background: ${({ theme }) => theme.bg3};
+    border-radius: 12px;
+    border: 0.5px solid ${({ theme }) => theme.bg2};
+    overflow: hidden;
+    flex: 1;
+`;

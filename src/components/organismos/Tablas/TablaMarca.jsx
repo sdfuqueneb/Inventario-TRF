@@ -6,11 +6,9 @@ import Swal from "sweetalert2";
 import { useMarcaStore } from "../../../store/MarcaStore";
 import { variable } from "../../../styles/variables";
 
-export function TablaMarca({data}) {
+export function TablaMarca({data, onEditar}) {
     const {eliminarMarca} = useMarcaStore();
-    const editar = () => {
-
-    }
+    const editar = (p) => onEditar(p)
     const eliminar = (p) => {
         if (p.descripcion === "Generica") {
             Swal.fire ({

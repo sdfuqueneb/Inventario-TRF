@@ -1,11 +1,14 @@
 import styled from "styled-components";
-import { LinksArray, SecondarylinksArray} from "../../../utils/dataEstatica";
+import { useContext } from "react";                 
+import { ThemeContext } from "../../../App";    
+import { LinksArray, SecondarylinksArray } from "../../../utils/dataEstatica";
 import { SidebarCard } from "./SidebardCard";
 import { ToggleTema } from "../ToggleTema";
 import { variable } from "../../../styles/variables";
 import { NavLink } from "react-router-dom";
 
 export function Sidebar({ state, setState }) {
+  const { theme } = useContext(ThemeContext); 
 
   return (
     <Main $isopen={state.toString()}>
@@ -15,7 +18,7 @@ export function Sidebar({ state, setState }) {
       <Container $isopen={state.toString()} className={state ? "active" : ""}>
         <div className="Logocontent">
           <div className="imgcontent">
-            <img src={variable.logo} />
+            <img src={theme === "dark" ? variable.logo_b : variable.logo} />
           </div>
         </div>
         {LinksArray.map(({ icon, label, to }) => (
@@ -31,7 +34,6 @@ export function Sidebar({ state, setState }) {
               <span className={state ? "label_ver" : "label_oculto"}>
                 {label}
               </span>
-              
             </NavLink>
           </div>
         ))}
@@ -49,17 +51,17 @@ export function Sidebar({ state, setState }) {
               <span className={state ? "label_ver" : "label_oculto"}>
                 {label}
               </span>
-             
             </NavLink>
           </div>
         ))}
-        <ToggleTema/>
+        <ToggleTema />
         <Divider />
         {state && <SidebarCard />}
       </Container>
     </Main>
   );
 }
+
 const Container = styled.div`
   color: ${(props) => props.theme.text};
   background: ${(props) => props.theme.bg};

@@ -133,7 +133,7 @@ const Container = styled.div`
     color: #EFF1F3;
 
     img {
-      width: 300px;
+      width: 30px;
     }
   }
   .cuadros {

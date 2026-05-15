@@ -8,8 +8,8 @@ export function Marca() {
     const {mostrarMarca, datamarca, buscarMarca, buscador} = useMarcaStore();
     const {dataempresa} = useEmpresaStore();
     const empresaId = dataempresa?.empresa?.id;
-    const {isLoading, error} = useQuery({ queryKey: ["Mostrar marca", {id_empresa: empresaId}], 
-                                queryFn: () => mostrarMarca({id_empresa: empresaId}), enabled: !!empresaId});
+    const {isLoading, error} = useQuery({ queryKey: ["Mostrar marca", {id_empresa: dataempresa?.id}], 
+                                queryFn: () => mostrarMarca({id_empresa: dataempresa?.id}), enabled: dataempresa?.id});
     const {data: buscardata} = useQuery({ queryKey: ["Buscar marca", {id_empresa: empresaId, descripcion: buscador}], 
                                 queryFn: () => buscarMarca({id_empresa: empresaId, descripcion: buscador}), enabled: !!empresaId});
     if (isLoading) {
