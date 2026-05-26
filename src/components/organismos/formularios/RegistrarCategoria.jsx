@@ -1,45 +1,60 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { variable } from "../../../styles/variables";
-import { InputText } from "../formularios/InputText";
+import { InputText } from "./InputText";
 import { Btnsave} from "../../moleculas/Btnsave";
-import { useMarcaStore } from "../../../store/MarcaStore";
+import { useCategoriaStore } from "../../../store/CategoriaStore";
 import { ConvertirCapitalize } from "../../../utils/Conversiones";
 import { useForm } from "react-hook-form";
 import { useEmpresaStore } from "../../../store/EmpresaStore";
-export function RegistrarMarca({ onClose, dataSelect, accion }) {
-  const { InsertarMarca, editarMarca } = useMarcaStore();
+import { CirclePicker } from "react-color";
+
+export function RegistrarCategoria({ onClose, dataSelect, accion }) {
+  const [currentColor, setColor] = useState(
+    accion === "Editar" ? dataSelect?.color : "#2ec971"
+  );
+  const [loading, setLoading] = useState(false);
+  const { InsertarCategoria, editarCategoria } = useCategoriaStore();
   const { dataempresa } = useEmpresaStore();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-  async function insertar(data) {
-    const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
 
+  const elegirColor = (color) => {
+    setColor(color.hex);
+  };
+
+  async function insertar(data) {
+    if (loading) return;
+    setLoading(true);
+
+    const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
     if (!empresaId) {
-      console.error("Error: No se encontró el ID de la empresa en el estado global.");
+      console.error("Error: No se encontró el ID de la empresa.");
+      setLoading(false);
       return;
     }
 
-    const p = {
-      _descripcion: ConvertirCapitalize(data.nombre),
-      _idempresa: empresaId,
-    };
-
-    if (accion === "Editar") {
-      const pEditar = {
-        id: dataSelect?.id, 
-        descripcion: p._descripcion,
-        id_empresa: p._idempresa
-      };
-      
-      await editarMarca(pEditar);
+    try {
+      if (accion === "Editar") {
+        await editarCategoria({
+          id: dataSelect?.id,
+          descripcion: ConvertirCapitalize(data.nombre),
+          id_empresa: empresaId,
+          color: currentColor,
+        });
+      } else {
+        await InsertarCategoria({
+          _color: currentColor,
+          _descripcion: ConvertirCapitalize(data.nombre),
+          _idempresa: empresaId,
+        });
+      }
       onClose();
-    } else {
-      await InsertarMarca(p);
-      onClose();
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -49,10 +64,9 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
         <div className="headers">
           <section>
             <h1>
-              {accion == "Editar" ? "Editar marca" : "Registrar nueva marca"}
+              {accion === "Editar" ? "Editar Categoria" : "Registrar Categoria"}
             </h1>
           </section>
-
           <section>
             <span onClick={onClose}>x</span>
           </section>
@@ -61,27 +75,32 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
         <form className="formulario" onSubmit={handleSubmit(insertar)}>
           <section>
             <article>
-              <InputText icono={<variable.iconomarca />}>
+              <InputText icono={<variable.iconocategorias />}>
                 <input
                   className="form__field"
                   defaultValue={dataSelect?.descripcion ?? ""}
                   type="text"
                   placeholder=""
-                  {...register("nombre", {
-                    required: true,
-                  })}
+                  {...register("nombre", { required: true })}
                 />
-                <label className="form__label">marca</label>
+                <label className="form__label">Categoria</label>
                 {errors.nombre?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
 
+            <article className="colorContainer">
+              <CirclePicker onChange={elegirColor} color={currentColor} />
+            </article>
+
+            {currentColor}
+
             <div className="btnguardarContent">
               <Btnsave
                 icono={<variable.iconoguardar />}
-                titulo="Guardar"
+                titulo={loading ? "Guardando..." : "Guardar"}
                 bgcolor="#2ec971"
-                type="submit" 
+                type="submit"
+                disabled={loading}
               />
             </div>
           </section>
@@ -90,6 +109,7 @@ export function RegistrarMarca({ onClose, dataSelect, accion }) {
     </Container>
   );
 }
+
 const Container = styled.div`
   transition: 0.5s;
   top: 0;

@@ -1,8 +1,6 @@
 import { variable } from "../styles/variables"; 
-import {
-  AiOutlineHome,
-  AiOutlineSetting,
-} from "react-icons/ai";
+import { AiOutlineHome } from "react-icons/ai";
+import { FaPerson } from "react-icons/fa6";
 
 export const DesplegableUser = [
   {
@@ -43,8 +41,8 @@ export const LinksArray = [
 ];
 export const SecondarylinksArray = [
   {
-    label: "Configuración",
-    icon: <AiOutlineSetting />,
+    label: "Control",
+    icon: <FaPerson />,
     to: "/configurarcuenta",
   },
 
@@ -63,7 +61,6 @@ export const TemasData = [
   },
 ];
 
-//data configuracion
 export const DataModulosConfiguracion =[
   {
     title:"Productos",
@@ -91,7 +88,7 @@ export const DataModulosConfiguracion =[
     title:"Categoría de productos",
     subtitle:"Organizar por categorías",
     icono:"https://i.ibb.co/1GzK0Qsj/combo.png",
-    link:"/configurarcuenta/categorias",
+    link:"/configurarcuenta/categoria",
     state: true,
   },
   {
@@ -103,7 +100,7 @@ export const DataModulosConfiguracion =[
   },
 
 ]
-//tipo usuario
+
 export const TipouserData = [
   {
     descripcion: "Colaborador",
@@ -115,7 +112,6 @@ export const TipouserData = [
   },
 ];
 
-//tipodoc
 export const TipoDocData = [
   {
     descripcion: "CC",

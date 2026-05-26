@@ -10,6 +10,8 @@ import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { useEmpresaStore } from "../store/EmpresaStore";
 import { Marca } from "../pages/Marca";
 import { Configuracion } from "../pages/Configuracion";
+import { Categoria } from "../pages/Categoria";
+import { Productos } from "../pages/Productos";
 
 export function MyRoutes() {
     const {user} = UserAuth();
@@ -38,6 +40,8 @@ export function MyRoutes() {
                 <Route path="/" element={<Home/>}/>
                 <Route path="/configurarcuenta" element={<Configuracion/>}/>
                 <Route path="/configurarcuenta/marca" element={<Marca/>}/>
+                <Route path="/configurarcuenta/categoria" element={<Categoria/>}/>
+                <Route path="/configurarcuenta/productos" element={<Productos/>}/>
             </Route>
         </Routes>
     )

@@ -9,7 +9,7 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import carrito from "../../assets/carrito.svg";
-import ISO from "../../assets/ISO.png";
+import FONDO from "../../assets/FONDO.png";
 import { MdOutlineInfo } from "react-icons/md";
 import { ThemeContext } from "../../App";
 import { RegistrarAdmin } from "../organismos/formularios/RegistrarAdmin";
@@ -48,10 +48,10 @@ export function LoginTemplate() {
   return (
     <Container>
       <div className="contentLogo">
-        <img src={ISO}></img>
       </div>
 
       <div className="bannerlateral">
+        <img src={FONDO}></img>
       </div>
 
       <div className="contentCard">
@@ -151,8 +151,13 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;  
+
     img {
-      width: 80%;
+        width: 100%;      
+        height: 100%;       
+        object-fit: cover;  
+        object-position: center;
     }
   }
   .contentCard {

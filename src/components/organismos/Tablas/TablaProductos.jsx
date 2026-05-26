@@ -3,15 +3,15 @@ import { flexRender } from "@tanstack/react-table";
 import styled from "styled-components";
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
 import Swal from "sweetalert2";
-import { useMarcaStore } from "../../../store/MarcaStore";
+import { useProductosStore } from "../../../store/ProductosStore";
 import { variable } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginacion } from "./Paginacion";
 import { useState } from "react";
 
-export function TablaMarca({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
+export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
     const [pagina, setPagina] = useState(1);
-    const {eliminarMarca} = useMarcaStore();
+    const {eliminarProductos} = useProductosStore();
     const editar = (p) => onEditar(p)
     const eliminar = (p) => {
         if (p.descripcion === "Generica") {
@@ -33,7 +33,7 @@ export function TablaMarca({data, onEditar, SetopenRegistro, setdataSelect, setA
             cancelButtonText: "Cancelar"
         }).then(async(result) => {
         if (result.isConfirmed) {
-            await eliminarMarca({id:p.id})
+            await eliminarProductos({id:p.id})
         }
     });
     }

@@ -3,15 +3,16 @@ import { flexRender } from "@tanstack/react-table";
 import styled from "styled-components";
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
 import Swal from "sweetalert2";
-import { useMarcaStore } from "../../../store/MarcaStore";
+import { useCategoriaStore } from "../../../store/CategoriaStore";
 import { variable } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginacion } from "./Paginacion";
 import { useState } from "react";
+import { ColorContent } from "../../atomos/ColorContent";
 
-export function TablaMarca({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
+export function TablaCategoria({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
     const [pagina, setPagina] = useState(1);
-    const {eliminarMarca} = useMarcaStore();
+    const {eliminarCategoria} = useCategoriaStore();
     const editar = (p) => onEditar(p)
     const eliminar = (p) => {
         if (p.descripcion === "Generica") {
@@ -33,26 +34,44 @@ export function TablaMarca({data, onEditar, SetopenRegistro, setdataSelect, setA
             cancelButtonText: "Cancelar"
         }).then(async(result) => {
         if (result.isConfirmed) {
-            await eliminarMarca({id:p.id})
+            await eliminarCategoria({id:p.id})
         }
     });
     }
-    const columns = [{
+
+    const columns = [
+      {
         accessorKey: "descripcion",
         header: "Descripción",
-        cell: (info) => ( <span data-title="Descripción" className="ContentCell"> {info.getValue()} </span> )
-    },
-    {
+        cell: (info) => (
+          <span className="ContentCell">
+            {info.getValue()}
+          </span>
+        )
+      },
+      {
+        accessorKey: "color",
+        header: "Color",
+        cell: (info) => (
+          <span className="ContentCell">
+            <ColorContent $color={info.getValue()} $alto="25px" $ancho="25px" />
+          </span>
+        )
+      },
+      {
         accessorKey: "acciones",
         header: "Acciones",
         enableSorting: false,
-        cell: (info) =>(
-                <ContentAccionesTabla 
-                    funcionEditar={() => editar(info.row.original)}
-                    funcionEliminar={() => eliminar(info.row.original)}
-                    className="ContentCell"
-                />)
-    }]
+        cell: (info) => (
+          <ContentAccionesTabla
+            funcionEditar={() => editar(info.row.original)}
+            funcionEliminar={() => eliminar(info.row.original)}
+            className="ContentCell"
+          />
+        )
+      }
+    ]
+
     const table = useReactTable({
         data: data ?? [],
         columns,

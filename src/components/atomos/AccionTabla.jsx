@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export function AccionTabla({funcion, icono, color, fontSize}) {
     return(
-        <Container onClick={funcion} $color={color} $fontSize={fontSize}>
+        <Container onClick={funcion} $color={color} $fontSize={fontSize} $funcion={funcion}>
             {icono}
         </Container>
     )

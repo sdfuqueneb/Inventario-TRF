@@ -4,8 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 
 export function Home() {
     const { ContarUsuariosPorEmpresa, dataempresa } = useEmpresaStore();
-    const {data} = useQuery({queryKey: ["Contar usuarios por empresa", 
-        {idempresa: dataempresa.empresa?.id}], queryFn: () => ContarUsuariosPorEmpresa
-        ({id_empresa: dataempresa.empresa?.id}), enabled: !!dataempresa?.empresa?.id })
-    return (<HomeTemplate/>);
+    
+    const { data } = useQuery({
+        queryKey: ["Contar usuarios por empresa", { idempresa: dataempresa?.id }],
+        queryFn: () => ContarUsuariosPorEmpresa({ id_empresa: dataempresa?.id }),
+        enabled: !!dataempresa?.id 
+    });
+
+    return <HomeTemplate />;
 }

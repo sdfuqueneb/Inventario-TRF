@@ -7,6 +7,7 @@ export const useMarcaStore = create((set, get) => ({
     datamarca: [],
     marcaItemSelect: [],
     parametros: {},
+    setMarcaItemSelect: (item) => set({ marcaItemSelect: item }),
     mostrarMarca: async (p) => {
     const response = await MostrarMarca(p);
     set({ parametros: p });

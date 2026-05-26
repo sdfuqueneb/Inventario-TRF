@@ -32,7 +32,7 @@ export function Header({ stateConfig }) {
           translatex="-50px"
           translatey="-12px"
         />
-        <span className="nombre">{user.email}</span>
+        <span className="nombre">{user.email?.split("@")[0]}</span>
         {stateConfig.state && (
         <ListaMenuDesplegable
           data={DesplegableUser}

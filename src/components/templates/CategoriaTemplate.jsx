@@ -1,19 +1,19 @@
 import styled from "styled-components";
-import { TablaMarca } from "../../components/organismos/Tablas/TablaMarca";
+import { TablaCategoria } from "../../components/organismos/Tablas/TablaCategoria";
 import { Header } from "../organismos/Header";
 import { useState, useCallback, useMemo } from "react";
-import { RegistrarMarca } from "../organismos/formularios/RegistrarMarca";
+import { RegistrarCategoria } from "../organismos/formularios/RegistrarCategoria";
 import { variable } from "../../styles/variables";
-import { useMarcaStore } from "../../store/MarcaStore";
+import { useCategoriaStore } from "../../store/CategoriaStore";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
-export function MarcaTemplate({ data }) {
+export function CategoriaTemplate({ data }) {
     const [state, setState] = useState(false);
     const [dataSelect, setDataSelect] = useState({});
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarMarca, datamarca } = useMarcaStore();
+    const { buscarCategoria, dataCategoria } = useCategoriaStore();
     const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
@@ -26,13 +26,13 @@ export function MarcaTemplate({ data }) {
         const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
         if (!empresaId || !valor.trim()) return;
     
-        buscarMarca({ id_empresa: empresaId, descripcion: valor });
+        buscarCategoria({ id_empresa: empresaId, descripcion: valor });
     };
 
     return (
         <Container>
             {openRegistro && (
-                <RegistrarMarca
+                <RegistrarCategoria
                     dataSelect={dataSelect}
                     accion={action}
                     onClose={() => SetopenRegistro(false)}
@@ -45,7 +45,7 @@ export function MarcaTemplate({ data }) {
 
             <div className="page-content">
                 <TopBar>
-                    <PageTitle>Marcas</PageTitle>
+                    <PageTitle>Categorias</PageTitle>
                     <BtnAgregar 
                     onClick={() => {
                         setDataSelect({});
@@ -53,7 +53,7 @@ export function MarcaTemplate({ data }) {
                         SetopenRegistro(true);
                     }}>
                         <variable.agregar />
-                        Nueva marca
+                        Nueva Categoria
                     </BtnAgregar>
                 </TopBar>
 
@@ -63,16 +63,16 @@ export function MarcaTemplate({ data }) {
                     </span>
                     <input
                         type="text"
-                        placeholder="Buscar marca..."
+                        placeholder="Buscar Categoria..."
                         value={busqueda}
                         onChange={handleBuscar}
                     />
                 </SearchBar>
                 <TableWrapper>
-                    <TablaMarca
+                    <TablaCategoria
                         data={data}
-                        onEditar={(marca) => {
-                            setDataSelect(marca);
+                        onEditar={(Categoria) => {
+                            setDataSelect(Categoria);
                             setAction("Editar");
                             SetopenRegistro(true);
                         }}

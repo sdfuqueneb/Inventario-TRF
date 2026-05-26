@@ -3,7 +3,7 @@ import { MostrarEmpresa, ContarUsuariosPorEmpresa } from "../supabase/crudEmpres
 
 export const useEmpresaStore = create((set) => ({
     contadorusuarios: 0,
-    dataempresa: [],
+    dataempresa: null,
     mostrarEmpresa: async (p) => {
         const response = await MostrarEmpresa(p);
         set({ dataempresa: response.empresa });
