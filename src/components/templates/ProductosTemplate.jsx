@@ -13,7 +13,7 @@ export function ProductosTemplate({ data }) {
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarProductos, dataProductos } = useProductosStore();
+    const { buscarProductos, mostrarProductos } = useProductosStore();
     const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
@@ -24,9 +24,23 @@ export function ProductosTemplate({ data }) {
         setBusqueda(valor);
         
         const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (!empresaId || !valor.trim()) return;
+        if (!empresaId) return;
+
+        // Si borra todo con el teclado, restauramos la lista completa de inmediato
+        if (!valor.trim()) {
+            mostrarProductos({ id_empresa: empresaId });
+            return;
+        }
     
         buscarProductos({ id_empresa: empresaId, descripcion: valor });
+    };
+
+    const handleLimpiarBusqueda = () => {
+        setBusqueda("");
+        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
+        if (empresaId) {
+            mostrarProductos({ id_empresa: empresaId }); // Restaura la tabla original
+        }
     };
 
     return (
@@ -67,7 +81,14 @@ export function ProductosTemplate({ data }) {
                         value={busqueda}
                         onChange={handleBuscar}
                     />
+                    
+                    {busqueda.trim() !== "" && (
+                        <BtnLimpiar onClick={handleLimpiarBusqueda} title="Limpiar búsqueda">
+                            x
+                        </BtnLimpiar>
+                    )}
                 </SearchBar>
+                
                 <TableWrapper>
                     <TablaProductos
                         data={data}
@@ -151,6 +172,7 @@ const SearchBar = styled.div`
     width: 100%;
     max-width: 400px;
     transition: border-color 0.2s;
+    position: relative; /* Agregado para control posicional interno */
 
     &:focus-within {
         border-color: ${({ theme }) => theme.bg5};
@@ -170,10 +192,29 @@ const SearchBar = styled.div`
         outline: none;
         font-size: 14px;
         color: ${({ theme }) => theme.text};
+        padding-right: 10px; /* Espacio para que el texto no choque con la X */
 
         &::placeholder {
             color: ${({ theme }) => theme.text}88;
         }
+    }
+`;
+
+const BtnLimpiar = styled.button`
+    background: transparent;
+    border: none;
+    color: ${({ theme }) => theme.text}88;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+
+    &:hover {
+        color: ${({ theme }) => theme.bg5}; /* Cambia al color principal en hover */
     }
 `;
 

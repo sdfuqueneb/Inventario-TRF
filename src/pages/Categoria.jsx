@@ -8,7 +8,7 @@ export function Categoria() {
     const { mostrarCategoria, dataCategoria, buscarCategoria, buscador } = useCategoriaStore();
     const { dataempresa } = useEmpresaStore();
 
-    const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
+    const empresaId = dataempresa?.id;
 
     const { isLoading, error } = useQuery({
         queryKey: ["Mostrar Categoria", { id_empresa: empresaId }],
