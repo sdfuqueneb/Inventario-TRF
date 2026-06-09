@@ -13,7 +13,7 @@ export function MarcaTemplate({ data }) {
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarMarca, mostrarMarca } = useMarcaStore();
+    const { buscarMarca, datamarca } = useMarcaStore();
     const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
@@ -24,22 +24,9 @@ export function MarcaTemplate({ data }) {
         setBusqueda(valor);
         
         const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (!empresaId) return;
-
-        if (!valor.trim()) {
-            mostrarMarca({ id_empresa: empresaId });
-            return;
-        }
+        if (!empresaId || !valor.trim()) return;
     
         buscarMarca({ id_empresa: empresaId, descripcion: valor });
-    };
-
-    const handleLimpiarBusqueda = () => {
-        setBusqueda("");
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (empresaId) {
-            mostrarMarca({ id_empresa: empresaId });
-        }
     };
 
     return (
@@ -80,11 +67,6 @@ export function MarcaTemplate({ data }) {
                         value={busqueda}
                         onChange={handleBuscar}
                     />
-                    {busqueda.trim() !== "" && (
-                        <BtnLimpiar onClick={handleLimpiarBusqueda} title="Limpiar búsqueda">
-                            x
-                        </BtnLimpiar>
-                    )}
                 </SearchBar>
                 <TableWrapper>
                     <TablaMarca
@@ -188,29 +170,10 @@ const SearchBar = styled.div`
         outline: none;
         font-size: 14px;
         color: ${({ theme }) => theme.text};
-        padding-right: 10px;
 
         &::placeholder {
             color: ${({ theme }) => theme.text}88;
         }
-    }
-`;
-
-const BtnLimpiar = styled.button`
-    background: transparent;
-    border: none;
-    color: ${({ theme }) => theme.text}88;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.15s;
-
-    &:hover {
-        color: ${({ theme }) => theme.bg5};
     }
 `;
 

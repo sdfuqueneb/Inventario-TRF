@@ -10,7 +10,7 @@ import { ContainerSelector } from "../../atomos/ContainerSelector";
 import { Selector } from "../Selector";
 import { useMarcaStore } from "../../../store/MarcaStore";
 import { useCategoriaStore } from "../../../store/CategoriaStore";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Btnfiltro } from "../../moleculas/Btnfiltro";
 import { RegistrarMarca } from "./RegistrarMarca";
 import { ListaGenerica } from "../ListaGenerica";
@@ -19,69 +19,49 @@ import { RegistrarCategoria } from "./RegistrarCategoria";
 export function RegistrarProductos({ onClose, dataSelect, accion }) {
   const { InsertarProductos, editarProductos } = useProductosStore();
   const { dataempresa } = useEmpresaStore();
-  
   const { marcaItemSelect, datamarca, setMarcaItemSelect } = useMarcaStore();
-  const { CategoriaItemSelect, datacategoria, dataCategoria, setCategoriaItemSelect } = useCategoriaStore();
-
-  const lasCategorias = dataCategoria ?? datacategoria ?? [];
+  const { CategoriaItemSelect, dataCategoria, setCategoriaItemSelect } = useCategoriaStore();
 
   const [stateMarca, setStateMarca] = useState(false);
   const [stateCategoria, setStateCategoria] = useState(false);
 
   const { register, formState: { errors }, handleSubmit } = useForm();
 
-  useEffect(() => {
-    if (accion !== "Editar") {
-      setMarcaItemSelect(null);
-      setCategoriaItemSelect(null);
-    }
-  }, [accion]);
-
   async function insertar(data) {
     const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
     if (!empresaId) return;
-
-    const idMarcaFinal = marcaItemSelect?.id ?? dataSelect?.id_marca;
-    const idCategoriaFinal = CategoriaItemSelect?.id ?? dataSelect?.id_categoria;
-
-    if (!idMarcaFinal || !idCategoriaFinal) {
-      alert("Por favor, seleccione una Marca y una Categoría válidas antes de guardar.");
-      return;
-    }
 
     if (accion === "Editar") {
       await editarProductos({
         id: dataSelect?.id,
         descripcion: ConvertirCapitalize(data.nombre),
         codigobarras: data.codigobarras,
-        modelo: data.modelo ?? "", // <--- 1. AGREGADO EN EDICIÓN
         placa: data.placa,
-        preciocompra: parseFloat(data.preciocompra) || 0,
-        stock: parseFloat(data.stock) || 0,
-        stock_minimo: parseFloat(data.stock_minimo) || 0,
-        id_marca: Number(idMarcaFinal),
-        id_categoria: Number(idCategoriaFinal),
-        id_empresa: Number(empresaId),
+        preciocompra: parseFloat(data.preciocompra),
+        stock: parseFloat(data.stock),
+        stock_minimo: parseFloat(data.stock_minimo),
+        id_marca: marcaItemSelect?.id,
+        id_categoria: CategoriaItemSelect?.id,
+        id_empresa: empresaId,
       });
     } else {
       await InsertarProductos({
-        codigobarras: data.codigobarras ?? "",
-        descripcion: ConvertirCapitalize(data.nombre),
-        modelo: data.modelo ?? "", // <--- 1. AGREGADO EN INSERCIÓN
-        id_categoria: Number(idCategoriaFinal),
-        id_empresa: Number(empresaId),
-        id_marca: Number(idMarcaFinal),
-        placa: data.placa ?? "",
-        preciocompra: parseFloat(data.preciocompra) || 0,
-        stock: parseFloat(data.stock) || 0,
-        stock_minimo: parseFloat(data.stock_minimo) || 0,
+        _codigobarras: data.codigobarras ?? "",
+        _descripcion: ConvertirCapitalize(data.nombre),
+        _id_categoria: CategoriaItemSelect?.id,
+        _id_empresa: empresaId,
+        _id_marca: marcaItemSelect?.id,
+        _placa: data.placa ?? "",
+        _preciocompra: parseFloat(data.preciocompra) || 0,
+        _stock: parseFloat(data.stock) || 0,
+        _stock_minimo: parseFloat(data.stock_minimo) || 0,
       });
     }
     onClose();
   }
 
   return (
-    <Container>
+        <Container>
       <div className="sub-contenedor">
         <div className="headers">
           <section>
@@ -101,19 +81,8 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
                   type="text" placeholder=""
                   {...register("nombre", { required: true })}
                 />
-                <label className="form__label">Tipo / Producto</label>
+                <label className="form__label">Tipo</label>
                 {errors.nombre?.type === "required" && <p>Campo requerido</p>}
-              </InputText>
-            </article>
-
-            {/* 3. BLOQUE DE INPUT PARA MODELO AGREGADO AQUÍ */}
-            <article>
-              <InputText icono={<variable.icononombre />}> 
-                <input className="form__field" defaultValue={dataSelect?.modelo ?? ""}
-                  type="text" placeholder=""
-                  {...register("modelo")} 
-                />
-                <label className="form__label">Modelo</label>
               </InputText>
             </article>
 
@@ -172,8 +141,7 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
               <Selector
                 funcion={() => { setStateMarca(!stateMarca); setStateCategoria(false); }}
                 state={stateMarca} color="#2EC971"
-                texto1="💻" 
-                texto2={marcaItemSelect?.descripcion || dataSelect?.marca || "Seleccione una marca..."}
+                texto1="💻" texto2={marcaItemSelect?.descripcion}
               />
               {stateMarca && (
                 <ListaGenerica
@@ -190,14 +158,13 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
               <Selector
                 funcion={() => { setStateCategoria(!stateCategoria); setStateMarca(false); }}
                 state={stateCategoria} color="#2EC971"
-                texto1="🏷️" 
-                texto2={CategoriaItemSelect?.descripcion || dataSelect?.categoria || "Seleccione una categoría..."}
+                texto1="🏷️" texto2={CategoriaItemSelect?.descripcion}
               />
               {stateCategoria && (
                 <ListaGenerica
                   setState={() => setStateCategoria(false)}
                   scroll="scroll"
-                  data={lasCategorias}
+                  data={dataCategoria ?? []}
                   funcion={(item) => { setCategoriaItemSelect(item); setStateCategoria(false); }}
                 />
               )}
@@ -228,29 +195,15 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px 0;
 
   .sub-contenedor {
     width: 500px;
     max-width: 85%;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
     border-radius: 20px;
     background: ${({ theme }) => theme.bgtotal};
     box-shadow: -10px 15px 30px rgba(10, 9, 9, 0.4);
     padding: 13px 36px 20px 36px;
     z-index: 100;
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
 
     .headers {
       display: flex;

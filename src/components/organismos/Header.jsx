@@ -20,7 +20,7 @@ export function Header({ stateConfig }) {
       
       <Datauser onClick={stateConfig.setState}>
         <div className="imgContainer">
-          <img src="https://i.ibb.co/Jj7KVb1C/perfil-removebg-preview.png" />
+          <img src="https://i.ibb.co/kGYgRZ8/programador.png" />
         </div>
         <BtnCircular
           icono={<variable.iconocorona />}
@@ -32,7 +32,7 @@ export function Header({ stateConfig }) {
           translatex="-50px"
           translatey="-12px"
         />
-        <span className="nombre"><b>{user.email?.split("@")[0]}</b></span>
+        <span className="nombre">{user.email?.split("@")[0]}</span>
         {stateConfig.state && (
         <ListaMenuDesplegable
           data={DesplegableUser}

@@ -1,35 +1,22 @@
 import styled from "styled-components";
 import { variable } from "../../../styles/variables";
-import { useNavigate } from "react-router-dom";
 
 export function Paginacion({ table, pagina, maximo, irinicio }) {
-  const navigate = useNavigate();
-
-  const IconoConfig = variable.iconoconfiguracion || variable.iconocorreo || variable.iconotodos;
-
   return (
-    <Container>
-      <button onClick={() => navigate("/configurarcuenta")} title="Volver a Configuración">
-        <span className="iconos">
-          {variable.iconoconfiguracion ? <variable.iconoconfiguracion /> : "📁"}
-        </span>
-      </button>
-
-      <div className="separador-controles" />
-
-      <button onClick={irinicio} disabled={!table.getCanPreviousPage()}>
-        <span className="iconos"><variable.iconotodos /></span>
-      </button>
-      <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-        <span className="iconos izq"><variable.iconoflechaderecha /></span>
-      </button>
-      <span>{pagina}</span>
-      <p>de {maximo}</p>
-      <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-        <span className="iconos"><variable.iconoflechaderecha /></span>
-      </button>
-    </Container>
-  );
+  <Container>
+    <button onClick={irinicio} disabled={!table.getCanPreviousPage()}>
+      <span className="iconos"><variable.iconotodos /></span>
+    </button>
+    <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+      <span className="iconos izq"><variable.iconoflechaderecha /></span>
+    </button>
+    <span>{pagina}</span>
+    <p>de {maximo}</p>
+    <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+      <span className="iconos"><variable.iconoflechaderecha /></span>
+    </button>
+  </Container>
+);
 }
 
 const Container = styled.div`
@@ -40,15 +27,8 @@ const Container = styled.div`
   padding: 12px 0;  
   width: 100%;
 
-  .separador-controles {
-    width: 2px;
-    height: 25px;
-    background-color: ${({ theme }) => theme.bg2 || "#484848"};
-    margin: 0 5px;
-  }
-
-  button {
-    background-color: #2EC971;
+  button{
+  background-color: #2EC971;
     border: none;
     padding: 5px 10px;
     border-radius: 3px;
@@ -62,24 +42,22 @@ const Container = styled.div`
     transition: 0.3s;
     flex-shrink: 0;  
 
-    &:hover {
-      box-shadow: 0px 10px 15px -3px ${(props) => props.$colorCategoria};
+    &:hover{
+      box-shadow: 0px 10px 15px -3px ${(props) => props.$colorCategoria}
     }
 
-    .iconos {
+    .iconos{
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      
-      &.izq {
+      &.izq{
         transform: rotate(-180deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
 
-  button[disabled] {
+  button[disabled]{
     background-color: #646464;
     cursor: no-drop;
     box-shadow: none;

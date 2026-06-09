@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { BuscarMarca, EditarMarca, EliminarMarca, InsertarMarca, MostrarMarca } from "../supabase/crudMarca";
-import { supabase } from "../supabase/supabase.config";
 
 export const useMarcaStore = create((set, get) => ({
     buscador: "",
@@ -10,15 +9,11 @@ export const useMarcaStore = create((set, get) => ({
     parametros: {},
     setMarcaItemSelect: (item) => set({ marcaItemSelect: item }),
     mostrarMarca: async (p) => {
-        const { data, error } = await supabase
-            .from("marca")
-            .select("*")
-            .eq("id_empresa", p.id_empresa)
-            .order("id", { ascending: true });
-
-        if (error) return [];
-        set({ datamarca: data ?? [] });
-        return data;
+    const response = await MostrarMarca(p);
+    set({ parametros: p });
+    set({ datamarca: response });
+    set({ marcaItemSelect: response[0] });
+    return response;                   
     },
     InsertarMarca: async (p) => {
         await InsertarMarca(p);
