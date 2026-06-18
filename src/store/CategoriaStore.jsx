@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { BuscarCategoria, EditarCategoria, EliminarCategoria, InsertarCategoria, MostrarCategoria } from "../supabase/crudCategoria";
+import { supabase } from "../supabase/supabase.config";
 
 export const useCategoriaStore = create((set, get) => ({
     buscador: "",
@@ -9,11 +10,17 @@ export const useCategoriaStore = create((set, get) => ({
     parametros: {},
     setCategoriaItemSelect: (item) => set({ CategoriaItemSelect: item }),
     mostrarCategoria: async (p) => {
-    const response = await MostrarCategoria(p);
-    set({ parametros: p });
-    set({ dataCategoria: response });
-    set({ CategoriaItemSelect: response[0] });
-    return response;                   
+    const { data, error } = await supabase
+            .from("categorias")
+            .select("*")
+            .eq("id_empresa", p.id_empresa)
+            .order("id", { ascending: true });
+
+        if (error) return [];
+        
+        set({ parametros: p });
+        set({ dataCategoria: data ?? [] }); 
+        return data;                   
     },
     InsertarCategoria: async (p) => {
         await InsertarCategoria(p);

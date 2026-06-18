@@ -72,7 +72,7 @@ export const DataModulosConfiguracion =[
   {
     title:"Personal",
     subtitle:"Controla accesos y actividades",
-    icono:"https://i.ibb.co/mrcKqXbr/personal.png",
+    icono:"https://i.ibb.co/whPDSH7P/personal.png",
     link:"/configurarcuenta/usuarios",
     state: true,
   },
@@ -80,7 +80,7 @@ export const DataModulosConfiguracion =[
   {
     title:"Tu empresa",
     subtitle:"Prepara tu espacio de trabajo",
-    icono:"https://i.ibb.co/qFcBK4gd/tr-imagen.png",
+    icono:"https://i.ibb.co/RGSZ3VjD/logo-2.png",
     link:"/configurarcuenta/empresa",
     state: true,
   },
@@ -122,7 +122,7 @@ export const TipoDocData = [
     icono: "📖",
   },
   {
-    descripcion: "Otros",
+    descripcion: "Otro",
     icono: "👤",
   },
 ];

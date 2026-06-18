@@ -1,51 +1,55 @@
 import styled from "styled-components";
-import { TablaCategoria } from "../../components/organismos/Tablas/TablaCategoria";
+import { TablaUsuarios } from "../organismos/Tablas/TablaUsuarios";
 import { Header } from "../organismos/Header";
-import { useState, useCallback, useMemo } from "react";
-import { RegistrarCategoria } from "../organismos/formularios/RegistrarCategoria";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { RegistrarUsuarios } from "../organismos/formularios/RegistrarUsuarios";
 import { variable } from "../../styles/variables";
-import { useCategoriaStore } from "../../store/CategoriaStore";
+import { useUsuariosStore } from "../../store/UsuariosStore";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
-export function CategoriaTemplate({ data }) {
+export function UsuariosTemplate({ data }) {
+    const { buscarUsuarios, mostrarUsuariosTodos, setParametros, dataUsuarios } = useUsuariosStore();
+    const { dataempresa } = useEmpresaStore();
     const [state, setState] = useState(false);
     const [dataSelect, setDataSelect] = useState({});
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarCategoria, mostrarCategoria } = useCategoriaStore();
-    const { dataempresa } = useEmpresaStore();
+    const debounceRef = useRef(null);
 
+    const empresaId = useMemo(() => dataempresa?.id ?? dataempresa?.[0]?.id, [dataempresa]);
     const handleSetState = useCallback(() => setState(prev => !prev), []);
     const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
+
+    useEffect(() => {
+        if (empresaId) setParametros({ id_empresa: empresaId });
+        return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+    }, [empresaId]);
 
     const handleBuscar = (e) => {
         const valor = e.target.value;
         setBusqueda(valor);
-        
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
         if (!empresaId) return;
-
+        if (debounceRef.current) clearTimeout(debounceRef.current);
         if (!valor.trim()) {
-            mostrarCategoria({ id_empresa: empresaId });
+            mostrarUsuariosTodos({ _id_empresa: empresaId });
             return;
         }
-
-        buscarCategoria({ id_empresa: empresaId, descripcion: valor });
+        debounceRef.current = setTimeout(() => {
+            buscarUsuarios({ id_empresa: empresaId, buscador: valor });
+        }, 400);
     };
 
     const handleLimpiarBusqueda = () => {
         setBusqueda("");
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (empresaId) {
-            mostrarCategoria({ id_empresa: empresaId });
-        }
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        if (empresaId) mostrarUsuariosTodos({ _id_empresa: empresaId });
     };
 
     return (
         <Container>
             {openRegistro && (
-                <RegistrarCategoria
+                <RegistrarUsuarios
                     dataSelect={dataSelect}
                     accion={action}
                     onClose={() => SetopenRegistro(false)}
@@ -58,25 +62,26 @@ export function CategoriaTemplate({ data }) {
 
             <div className="page-content">
                 <TopBar>
-                    <PageTitle>Categorias</PageTitle>
+                    <PageTitle>Usuarios</PageTitle>
                     <BtnAgregar 
-                    onClick={() => {
-                        setDataSelect({});
-                        setAction("Registrar");
-                        SetopenRegistro(true);
-                    }}>
-                        <variable.agregar />
-                        Nueva Categoria
+                        onClick={() => {
+                            setDataSelect({});
+                            setAction("Registrar");
+                            SetopenRegistro(true);
+                        }}
+                    >
+                        {variable.agregar && <variable.agregar />}
+                        Nuevo Usuario
                     </BtnAgregar>
                 </TopBar>
 
                 <SearchBar>
                     <span className="search-icon">
-                        <variable.iconobuscar />
+                        {variable.iconobuscar && <variable.iconobuscar />}
                     </span>
                     <input
                         type="text"
-                        placeholder="Buscar Categoria..."
+                        placeholder="Buscar Usuarios..."
                         value={busqueda}
                         onChange={handleBuscar}
                     />
@@ -86,14 +91,15 @@ export function CategoriaTemplate({ data }) {
                         </BtnLimpiar>
                     )}
                 </SearchBar>
+                
                 <TableWrapper>
-                    <TablaCategoria
-                        data={data}
-                        onEditar={(Categoria) => {
-                            setDataSelect(Categoria);
-                            setAction("Editar");
-                            SetopenRegistro(true);
-                        }}
+                <TablaUsuarios
+                    data={dataUsuarios}
+                    onEditar={(usuario) => {
+                        setDataSelect(usuario);
+                        setAction("Editar");
+                        SetopenRegistro(true);
+                    }}
                     />
                 </TableWrapper>
             </div>
@@ -152,8 +158,6 @@ const BtnAgregar = styled.button`
     cursor: pointer;
     transition: opacity 0.15s, transform 0.1s;
 
-    svg { font-size: 18px; }
-
     &:hover  { opacity: 0.88; }
     &:active { transform: scale(0.97); }
 `;
@@ -168,18 +172,6 @@ const SearchBar = styled.div`
     padding: 8px 14px;
     width: 100%;
     max-width: 400px;
-    transition: border-color 0.2s;
-
-    &:focus-within {
-        border-color: ${({ theme }) => theme.bg5};
-    }
-
-    .search-icon {
-        color: ${({ theme }) => theme.bg5};
-        display: flex;
-        align-items: center;
-        svg { font-size: 18px; }
-    }
 
     input {
         flex: 1;
@@ -188,11 +180,6 @@ const SearchBar = styled.div`
         outline: none;
         font-size: 14px;
         color: ${({ theme }) => theme.text};
-        padding-right: 10px;
-
-        &::placeholder {
-            color: ${({ theme }) => theme.text}88;
-        }
     }
 `;
 
@@ -201,17 +188,7 @@ const BtnLimpiar = styled.button`
     border: none;
     color: ${({ theme }) => theme.text}88;
     font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
-    padding: 0 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.15s;
-
-    &:hover {
-        color: ${({ theme }) => theme.bg5};
-    }
 `;
 
 const TableWrapper = styled.div`

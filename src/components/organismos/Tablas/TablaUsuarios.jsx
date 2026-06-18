@@ -3,18 +3,18 @@ import { flexRender } from "@tanstack/react-table";
 import styled from "styled-components";
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
 import Swal from "sweetalert2";
-import { useProductosStore } from "../../../store/ProductosStore";
+import { useUsuariosStore } from "../../../store/UsuariosStore";
 import { variable } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginacion } from "./Paginacion";
 import { useState } from "react";
 
-export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
+export function TablaUsuarios({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
     const [pagina, setPagina] = useState(1);
-    const {eliminarProductos} = useProductosStore();
+    const {eliminarUsuarios} = useUsuariosStore();
     const editar = (p) => onEditar(p)
     const eliminar = (p) => {
-        if (p.descripcion === "Generica") {
+        if (p.descripcion === "generico") {
             Swal.fire ({
                 icon: "error",
                 title: "No se puede realizar esta acción",
@@ -33,51 +33,49 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
             cancelButtonText: "Cancelar"
         }).then(async(result) => {
         if (result.isConfirmed) {
-            await eliminarProductos({id:p.id})
+            await eliminarUsuarios({id:p.id})
         }
     });
     }
     const columns = [
         {
-            accessorKey: "descripcion",
-            header: "Tipo",
-            cell: (info) => <span className="ContentCell">{info.getValue()}</span>
-        },
-        {
-            accessorKey: "modelo",
-            header: "Modelo",
-            enableSorting: false,
-            cell: (info) => <span className="ContentCell">{info.getValue()}</span>
-        },
-        {
-            accessorKey: "codigobarras",
-            header: "Serial",
-            enableSorting: false,
-            cell: (info) => <span className="ContentCell">{info.getValue()}</span>
-        },
-        {
-            accessorKey: "placa",
-            header: "Placa",
-            enableSorting: false,
-            cell: (info) => <span className="ContentCell">{info.getValue()}</span>
-        },
-        {
-            accessorKey: "categoria",
-            header: "Categoría",
-            enableSorting: false,
+            accessorKey: "nombre",
+            header: "Nombre",
             cell: (info) => (
-                <div data-title="Categoria" className="ContentCell">
-                    <ColorContentTable $color={info.row.original.color} className="contentCategoria">
-                        {info.getValue()}
-                    </ColorContentTable>
-                </div>
+                <span data-title="Nombre" className="ContentCell">
+                    {info.getValue()}
+                </span>
             )
         },
         {
-            accessorKey: "marca",
-            header: "Marca",
+            accessorKey: "correo",
+            header: "Correo",
             enableSorting: false,
-            cell: (info) => <span className="ContentCell">{info.getValue()}</span>
+            cell: (info) => (
+                <span data-title="Correo" className="ContentCell">
+                    {info.getValue()}
+                </span>
+            )
+        },
+        {
+            accessorKey: "tipo_usuario",
+            header: "Tipo",
+            enableSorting: false,
+            cell: (info) => (
+                <span data-title="Tipo" className="ContentCell">
+                    {info.getValue()}
+                </span>
+            )
+        },
+        {
+            accessorKey: "estado",
+            header: "Estado",
+            enableSorting: false,
+            cell: (info) => (
+                <span data-title="Estado" className="ContentCell">
+                    {info.getValue()}
+                </span>
+            )
         },
         {
             accessorKey: "acciones",
@@ -107,22 +105,22 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
                 {
                     table.getHeaderGroups().map((headerGroup) => (
                         <tr key = {headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                const sortedState = header.column.getIsSorted();
-                                const iconSort = sortedState === "asc" ? " ⬆️" : sortedState === "desc" ? " ⬇️" : "";
-
-                                return (
-                                    <th key = {header.id}>
-                                        {header.column.columnDef.header}
-                                        {header.column.getCanSort() && (
-                                          <span style={{cursor: "pointer"}} onClick={header.column.getToggleSortingHandler()}>
-                                            <FaArrowsAltV/>
-                                          </span>
-                                        )}
-                                        {iconSort}
-                                    </th>
-                                );
-                            })}
+                            {headerGroup.headers.map((header) => (
+                                <th key = {header.id}>
+                                    {header.column.columnDef.header}
+                                    {header.column.getCanSort() && (
+                                      <span style={{cursor: "pointer"}} onClick={header.column.getToggleSortingHandler()}>
+                                        <FaArrowsAltV/>
+                                      </span>
+                                    )}
+                                    {
+                                      {
+                                        asc: "⬆️",
+                                        desc: "⬇️"
+                                      }, [header.column.getIsSorted()]
+                                    }
+                                </th>
+                            ))}
                         </tr>
                     ))
                 }
@@ -146,19 +144,6 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
         <Paginacion table={table} irinicio={() => table.setPageIndex(0)} pagina={table.getState().pagination.pageIndex+1} setPagina={setPagina} maximo={table.getPageCount()}/>
     </Container>)
 }
-
-// ── Styled components ─────────────────────────────────────────────────────────
-
-// ColorContentTable estaba siendo usado en la columna "Categoría" pero no estaba definido
-const ColorContentTable = styled.span`
-  background-color: ${({ $color }) => $color ?? "transparent"};
-  color: ${({ $color }) => ($color ? "#fff" : "inherit")};
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.85em;
-  font-weight: 500;
-  white-space: nowrap;
-`;
 
 const Container = styled.div`
   position: relative;
