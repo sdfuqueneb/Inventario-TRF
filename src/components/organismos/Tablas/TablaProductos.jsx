@@ -147,13 +147,12 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
     </Container>)
 }
 
-// ── Styled components ─────────────────────────────────────────────────────────
-
-// ColorContentTable estaba siendo usado en la columna "Categoría" pero no estaba definido
 const ColorContentTable = styled.span`
-  background-color: ${({ $color }) => $color ?? "transparent"};
-  color: ${({ $color }) => ($color ? "#fff" : "inherit")};
-  padding: 3px 10px;
+  display: inline-block;
+  background-color: transparent;
+  color: ${({ $color }) => $color ?? "inherit"};
+  border: 1.5px dashed ${({ $color }) => $color ?? "currentColor"};
+  padding: 4px 18px;
   border-radius: 20px;
   font-size: 0.85em;
   font-weight: 500;

@@ -4,11 +4,14 @@ import {
   BuscarUsuarios,
   EditarUsuarios,
   EliminarUsuarios,
+  EliminarPermisos,
   InsertarAsignaciones,
   InsertarPermisos,
   InsertarUsuarios,
   MostrarModulos,
+  MostrarPermisos,
 } from "../supabase/crudUsuarios";
+import { DataModulosConfiguracion } from "../utils/dataEstatica";
 
 export const useUsuariosStore = create((set, get) => ({
   buscador: "",
@@ -17,8 +20,9 @@ export const useUsuariosStore = create((set, get) => ({
   UsuariosItemSelect: [],
   parametros: {},
   setParametros: (p) => set({ parametros: p }),
-
-  datamodulos:[],
+  datamodulos: [],
+  datapermisosEdit: [],
+  modulosConAcceso: DataModulosConfiguracion.map((m) => ({ ...m })),
 
   mostrarUsuarios: async (p) => {
     const { data, error } = await supabase
@@ -26,7 +30,6 @@ export const useUsuariosStore = create((set, get) => ({
       .select("*")
       .eq("id_empresa", p.id_empresa)
       .order("id", { ascending: true });
-
     if (error) return [];
     set({ dataUsuarios: data ?? [] });
     return data;
@@ -34,66 +37,52 @@ export const useUsuariosStore = create((set, get) => ({
 
   mostrarUsuariosTodos: async (p) => {
     const idEmpresa = p._id_empresa ?? p.id_empresa;
-
     if (!idEmpresa) {
       console.error("mostrarUsuariosTodos: falta id_empresa");
       return [];
     }
-
     const { data: asignaciones, error: errAsig } = await supabase
       .from("asignar_empresa")
       .select("id_usuario")
       .eq("id_empresa", idEmpresa);
-
     if (errAsig) {
       console.error("Error al leer asignar_empresa:", errAsig.message);
       return [];
     }
-
     if (!asignaciones || asignaciones.length === 0) {
       set({ dataUsuarios: [] });
       return [];
     }
-
     const ids = asignaciones.map((a) => a.id_usuario);
-
     const { data, error } = await supabase
       .from("usuarios")
       .select("*")
       .in("id", ids)
       .order("id", { ascending: true });
-
     if (error) {
       console.error("Error al leer usuarios:", error.message);
       return [];
     }
-
     set({ dataUsuarios: data ?? [] });
     return data ?? [];
   },
 
   InsertarUsuarios: async (parametrosAuth, p, datacheckpermisos) => {
-    const {
-      data: { session: adminSession },
-    } = await supabase.auth.getSession();
-
+    const { data: { session: adminSession } } = await supabase.auth.getSession();
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: parametrosAuth.correo,
       password: parametrosAuth.pass,
     });
-
     if (authError || !authData.user) {
       console.error("Error al crear usuario en Auth:", authError?.message);
       return null;
     }
-
     if (adminSession) {
       await supabase.auth.setSession({
         access_token: adminSession.access_token,
         refresh_token: adminSession.refresh_token,
       });
     }
-
     const dataUserNew = await InsertarUsuarios({
       nombre: p.nombre,
       numero_doc: p.numero_doc,
@@ -106,29 +95,16 @@ export const useUsuariosStore = create((set, get) => ({
       tipo_usuario: p.tipo_usuario,
       correo: p.correo,
     });
-
     if (!dataUserNew) return null;
-
-    await InsertarAsignaciones({
-      id_empresa: p.id_empresa,
-      id_usuario: dataUserNew.id,
-    });
-
-    datacheckpermisos.forEach(async (item) => {
+    await InsertarAsignaciones({ id_empresa: p.id_empresa, id_usuario: dataUserNew.id });
+    for (const item of datacheckpermisos) {
       if (item.check) {
-        await InsertarPermisos({
-          id_usuario: dataUserNew.id,
-          id_modulo: item.id,
-        });
+        await InsertarPermisos({ id_usuario: dataUserNew.id, id_modulo: item.id });
       }
-    });
-
+    }
     const { mostrarUsuariosTodos, parametros } = get();
     const empresaId = p.id_empresa ?? parametros.id_empresa;
-    if (empresaId) {
-      await mostrarUsuariosTodos({ _id_empresa: empresaId });
-    }
-
+    if (empresaId) await mostrarUsuariosTodos({ _id_empresa: empresaId });
     return dataUserNew;
   },
 
@@ -138,8 +114,14 @@ export const useUsuariosStore = create((set, get) => ({
     await mostrarUsuariosTodos({ _id_empresa: parametros.id_empresa });
   },
 
-  editarUsuarios: async (p) => {
+  editarUsuarios: async (p, datacheckpermisos) => {
     await EditarUsuarios(p);
+    await EliminarPermisos({ id_usuario: p.id });
+    for (const item of datacheckpermisos) {
+      if (item.check) {
+        await InsertarPermisos({ id_usuario: p.id, id_modulo: item.id });
+      }
+    }
     const { mostrarUsuariosTodos, parametros } = get();
     await mostrarUsuariosTodos({ _id_empresa: parametros.id_empresa });
   },
@@ -151,8 +133,33 @@ export const useUsuariosStore = create((set, get) => ({
   },
 
   mostrarModulos: async () => {
-    const response = await MostrarModulos()
-    set ({datamodulos: response})
-    return response
-  }
+    const response = await MostrarModulos();
+    set({ datamodulos: response });
+    return response;
+  },
+
+  cargarPermisosEditar: async (id_usuario) => {
+    set({ datapermisosEdit: [] });
+    const permisos = await MostrarPermisos({ id_usuario });
+    set({ datapermisosEdit: permisos ?? [] });
+  },
+
+  aplicarPermisosNavegacion: async (id_usuario) => {
+    const modulos = await MostrarModulos();
+    const permisos = await MostrarPermisos({ id_usuario });
+
+    const idsPermitidos = new Set(permisos?.map((p) => p.id_modulo) ?? []);
+
+    const modulosActualizados = DataModulosConfiguracion.map((modulo) => {
+      const moduloDB = modulos?.find(
+        (m) => m.nombre.trim().toLowerCase() === modulo.title.trim().toLowerCase()
+      );
+      const tieneAcceso = moduloDB ? idsPermitidos.has(moduloDB.id) : true;
+      return { ...modulo, state: tieneAcceso };
+    });
+
+    set({ modulosConAcceso: modulosActualizados });
+
+    return modulosActualizados;
+  },
 }));

@@ -3,6 +3,7 @@ import { variable } from "../../styles/variables";
 import { CardDatosEmpresa } from "../moleculas/CardDatosEmpresa";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
+
 export function BannerEmpresa() {
     const { dataempresa, contadorusuarios } = useEmpresaStore();
     if (!dataempresa?.empresa) return null;

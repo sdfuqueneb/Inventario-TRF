@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { variable } from "../../../styles/variables";
 import { InputText } from "./InputText";
@@ -11,7 +11,7 @@ import { FaUser, FaEnvelope, FaLock, FaIdCard, FaPhone, FaMapMarkerAlt } from "r
 import { ListaModulos } from "../ListaModulos";
 
 export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
-  const { InsertarUsuarios, editarUsuarios } = useUsuariosStore();
+  const { InsertarUsuarios, editarUsuarios, mostrarModulos, cargarPermisosEditar } = useUsuariosStore();
   const { dataempresa } = useEmpresaStore();
 
   const [checkboxs, setCheckboxs] = useState([]);
@@ -28,6 +28,13 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
     }
   });
 
+  useEffect(() => {
+    mostrarModulos();
+    if (accion === "Editar" && dataSelect?.id) {
+      cargarPermisosEditar(dataSelect.id);
+    }
+  }, []);
+
   async function insertar(data) {
     const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
     if (!empresaId) {
@@ -36,16 +43,19 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
     }
 
     if (accion === "Editar") {
-      await editarUsuarios({
-        id:           dataSelect?.id,
-        nombre:       ConvertirCapitalize(data.nombre),
-        correo:       data.correo,
-        tipo_usuario: data.tipo_usuario,
-        numero_doc:   data.numero_doc,
-        tipo_doc:     data.tipo_doc,
-        telefono:     data.telefono,
-        direccion:    data.direccion,
-      });
+      await editarUsuarios(
+        {
+          id:           dataSelect?.id,
+          nombre:       ConvertirCapitalize(data.nombre),
+          correo:       data.correo,
+          tipo_usuario: data.tipo_usuario,
+          numero_doc:   data.numero_doc,
+          tipo_doc:     data.tipo_doc,
+          telefono:     data.telefono,
+          direccion:    data.direccion,
+        },
+        checkboxs
+      );
     } else {
       const parametrosAuth = { correo: data.correo, pass: data.pass };
       const p = {
@@ -90,10 +100,18 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
               </article>
 
               <article>
-                <InputText icono={<FaEnvelope />}>
-                  <input className="form__field" type="email" placeholder=""
-                    {...register("correo", { required: true })} />
-                  <label className="form__label">Correo Electrónico</label>
+                <InputText icono={<FaEnvelope />} $bloqueado={accion === "Editar"}>
+                  <input
+                    className="form__field"
+                    type="email"
+                    placeholder=""
+                    readOnly={accion === "Editar"}
+                    {...register("correo", { required: true })}
+                  />
+                  <label className="form__label">
+                    Correo Electrónico
+                    {accion === "Editar" && <span className="lock-hint"> · no editable</span>}
+                  </label>
                   {errors.correo && <p>Campo requerido</p>}
                 </InputText>
               </article>
@@ -255,5 +273,13 @@ const Container = styled.div`
     display: flex;
     justify-content: flex-end;
     margin-top: 24px;
+  }
+
+  /* Hint de campo bloqueado */
+  .lock-hint {
+    font-size: 0.75em;
+    opacity: 0.5;
+    font-weight: 400;
+    margin-left: 4px;
   }
 `;

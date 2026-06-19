@@ -7,6 +7,7 @@ import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { useEmpresaStore } from "../store/EmpresaStore";
+import { useUsuariosStore } from "../store/UsuariosStore";
 import { Marca } from "../pages/Marca";
 import { Configuracion } from "../pages/Configuracion";
 import { Categoria } from "../pages/Categoria";
@@ -17,7 +18,9 @@ import { MostrarUsuarios } from "../supabase/crudUsuarios";
 export function MyRoutes() {
     const { user } = UserAuth();
     const { mostrarEmpresa } = useEmpresaStore();
+    const { aplicarPermisosNavegacion } = useUsuariosStore();
 
+    // 1. Obtener el registro del usuario en tabla usuarios
     const { data: usuarioData, isLoading, error } = useQuery({
         queryKey: ["usuario auth", user?.id],
         queryFn: () => MostrarUsuarios(),
@@ -25,6 +28,7 @@ export function MyRoutes() {
         retry: false,
     });
 
+    // 2. Cargar la empresa asociada al usuario
     const { isLoading: isLoadingEmpresa, error: errorEmpresa } = useQuery({
         queryKey: ["empresa", usuarioData?.id],
         queryFn: () => mostrarEmpresa({ idusuario: usuarioData.id }),
@@ -32,8 +36,15 @@ export function MyRoutes() {
         retry: false,
     });
 
-    if (isLoading || isLoadingEmpresa) return <SpinnerLoader />;
+    // 3. Aplicar permisos de navegación según los módulos asignados al usuario
+    useQuery({
+        queryKey: ["permisos navegacion", usuarioData?.id],
+        queryFn: () => aplicarPermisosNavegacion(usuarioData.id),
+        enabled: !!usuarioData?.id,
+        retry: false,
+    });
 
+    if (isLoading || isLoadingEmpresa) return <SpinnerLoader />;
     if (error) return <ErrorMolecula mensaje={error.message} />;
 
     return (

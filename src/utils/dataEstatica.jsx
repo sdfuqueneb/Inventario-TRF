@@ -85,14 +85,14 @@ export const DataModulosConfiguracion =[
     state: true,
   },
   {
-    title:"Categoría de productos",
+    title:"Categoria producto",
     subtitle:"Organizar por categorías",
     icono:"https://i.ibb.co/1GzK0Qsj/combo.png",
     link:"/configurarcuenta/categoria",
     state: true,
   },
   {
-    title:"Marca de productos",
+    title:"Marca producto",
     subtitle:"Control de marcas",
     icono:"https://i.ibb.co/XrCdZMWL/lenovo.png",
     link:"/configurarcuenta/marca",

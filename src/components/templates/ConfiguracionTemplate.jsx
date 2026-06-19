@@ -1,12 +1,15 @@
-import {  Link } from "react-router-dom";
-import { DataModulosConfiguracion } from "../../utils/dataEstatica";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useRef } from "react";
+import { Mensaje } from "../moleculas/Mensaje";
+import { useUsuariosStore } from "../../store/UsuariosStore";
 
 export function ConfiguracionTemplate() {
-const cardsRef = useRef(null);
-const handleMouseMove = (e) => {
-  const cards = cardsRef.current?.querySelectorAll(".card");
+  const { modulosConAcceso } = useUsuariosStore();
+  const cardsRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    const cards = cardsRef.current?.querySelectorAll(".card");
     cards?.forEach((card) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -14,38 +17,45 @@ const handleMouseMove = (e) => {
       card.style.setProperty("--mouse-x", `${x}px`);
       card.style.setProperty("--mouse-y", `${y}px`);
     });
-};
-return (
+  };
+
+  return (
     <Container>
-        <div id="cards" ref={cardsRef} onMouseMove={handleMouseMove}>
-        {DataModulosConfiguracion.map((item, index) => {
-          return (
-            <Link to={item.state?item.link:""} className={item.state?"card": "card false"} key={index}>
-              <div className="card-content">
-                <div className="card-image">
-                  <img src={item.icono} />
-                </div>
-                <div className="card-info-wrapper">
-                  <div className="card-info">
-                    <i className="fa-duotone fa-unicorn"></i>
-                    <div className="card-info-title">
-                      <h3>{item.title}</h3>
-                      <h4>{item.subtitle}</h4>
-                    </div>
+      <div id="cards" ref={cardsRef} onMouseMove={handleMouseMove}>
+        {modulosConAcceso.map((item, index) => (
+          <Link
+            to={item.state ? item.link : ""}
+            // Bloquea navegación si no tiene acceso
+            onClick={(e) => { if (!item.state) e.preventDefault(); }}
+            className={item.state ? "card" : "card false"}
+            key={index}
+          >
+            <Mensaje state={item.state} />
+            <div className="card-content">
+              <div className="card-image">
+                <img src={item.icono} />
+              </div>
+              <div className="card-info-wrapper">
+                <div className="card-info">
+                  <i className="fa-duotone fa-unicorn"></i>
+                  <div className="card-info-title">
+                    <h3>{item.title}</h3>
+                    <h4>{item.subtitle}</h4>
                   </div>
                 </div>
               </div>
-            </Link>
-          );
-        })}
+            </div>
+          </Link>
+        ))}
       </div>
-    </Container>);
+    </Container>
+  );
 }
 
 const Container = styled.div`
   --bg-color: rgb(20, 20, 20);
   --card-color: rgb(23, 23, 23);
- 
+
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat, repeat;
@@ -89,21 +99,18 @@ const Container = styled.div`
     border: 0.5px solid transparent;
     &:hover {
       border: 1px solid ${(props) => props.theme.bg5};
-      .card-image {
-        img {
-          filter: grayscale(0);
-        }
+      .card-image img {
+        filter: grayscale(0);
       }
     }
-    &.false{
+    &.false {
+      cursor: not-allowed;
       &:hover {
-      border: 1px solid red;
-      .card-image {
-        img {
+        border: 1px solid red;
+        .card-image img {
           filter: grayscale(0);
         }
       }
-    }
     }
   }
 
@@ -149,11 +156,7 @@ const Container = styled.div`
     z-index: 2;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  span {
+  h1, h2, h3, h4, span {
     color: ${({ theme }) => theme.colorsubtitlecard};
     font-family: "Rubik", sans-serif;
     font-weight: 600;
@@ -169,7 +172,6 @@ const Container = styled.div`
     display: flex;
     height: 140px;
     justify-content: center;
-
     img {
       transition: 0.3s;
       height: 70%;
@@ -210,16 +212,10 @@ const Container = styled.div`
   }
 
   @media (max-width: 1000px) {
-    body {
-      align-items: flex-start;
-      overflow: auto;
-    }
-
     #cards {
       max-width: 1000px;
       padding: 10px 0px;
     }
-
     .card {
       flex-shrink: 1;
       width: calc(50% - 4px);
@@ -230,23 +226,18 @@ const Container = styled.div`
     .card {
       height: 180px;
     }
-
     .card-image {
       height: 80px;
     }
-
     .card-info-wrapper {
       padding: 0px 10px;
     }
-
     .card-info > i {
       font-size: 0.8em;
     }
-
     .card-info-title > h3 {
       font-size: 0.9em;
     }
-
     .card-info-title > h4 {
       font-size: 0.8em;
       margin-top: 4px;
@@ -257,9 +248,5 @@ const Container = styled.div`
     .card {
       width: 100%;
     }
-  }
-
-  #youtube-link {
-    bottom: 10px;
   }
 `;
