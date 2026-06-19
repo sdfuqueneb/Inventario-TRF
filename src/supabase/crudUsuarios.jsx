@@ -3,7 +3,7 @@ import { supabase } from "./supabase.config";
 import { ObtenerIdAuthSupabase } from "./globalSupabase";
 
 export const InsertarUsuarios = async (p) => {
-const { data, error } = await supabase.from("usuarios").insert(p).select().maybeSingle();
+  const { data, error } = await supabase.from("usuarios").insert(p).select().maybeSingle();
   if (error) {
     Swal.fire({
       icon: "error",
@@ -16,7 +16,7 @@ const { data, error } = await supabase.from("usuarios").insert(p).select().maybe
 };
 
 export const MostrarUsuarios = async () => {
-const idAuthSupabase = await ObtenerIdAuthSupabase();
+  const idAuthSupabase = await ObtenerIdAuthSupabase();
   const { error, data } = await supabase.from("usuarios").select().eq("idauth", idAuthSupabase).maybeSingle();
   if (error) {
     throw error;
@@ -38,7 +38,39 @@ export const EditarUsuarios = async (p) => {
 };
 
 export const EliminarUsuarios = async (p) => {
-  const { error } = await supabase.from("usuarios").delete().eq("id", p.id);
+  const { error: errorPermisos } = await supabase
+    .from("permisos")
+    .delete()
+    .eq("id_usuario", p.id);
+
+  if (errorPermisos) {
+    Swal.fire({
+      icon: "error",
+      title: "Error al eliminar",
+      text: "Error al eliminar permisos: " + errorPermisos.message,
+    });
+    return false;
+  }
+
+  const { error: errorAsignacion } = await supabase
+    .from("asignar_empresa")
+    .delete()
+    .eq("id_usuario", p.id);
+
+  if (errorAsignacion) {
+    Swal.fire({
+      icon: "error",
+      title: "Error al eliminar",
+      text: "Error al eliminar asignación: " + errorAsignacion.message,
+    });
+    return false;
+  }
+
+  const { error } = await supabase
+    .from("usuarios")
+    .delete()
+    .eq("id", p.id);
+
   if (error) {
     Swal.fire({
       icon: "error",
@@ -47,6 +79,7 @@ export const EliminarUsuarios = async (p) => {
     });
     return false;
   }
+
   return true;
 };
 
@@ -62,7 +95,7 @@ export const BuscarUsuarios = async (p) => {
   return data ?? [];
 };
 
-//Asignaciones
+// Asignaciones
 export const InsertarAsignaciones = async (p) => {
   const { error } = await supabase.from("asignar_empresa").insert(p);
   if (error) {
@@ -75,7 +108,7 @@ export const InsertarAsignaciones = async (p) => {
   }
 };
 
-//Permisos
+// Permisos
 export const InsertarPermisos = async (p) => {
   const { error } = await supabase.from("permisos").insert(p);
   if (error) {
@@ -92,7 +125,7 @@ export const MostrarPermisos = async (p) => {
   const { data } = await supabase
     .from("permisos")
     .select(`id, id_usuario, id_modulo, modulos(nombre)`)
-    .eq("id_usuario", p.id_usuario)
+    .eq("id_usuario", p.id_usuario);
   return data;
 };
 
@@ -102,6 +135,15 @@ export const EliminarPermisos = async (p) => {
     .delete()
     .eq("id_usuario", p.id_usuario);
   if (error) {
-    alert ("Error al eliminar ", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error al eliminar permisos",
+      text: error.message,
+    });
   }
 };
+
+export async function MostrarModulos() {
+  const { data } = await supabase.from("modulos").select();
+  return data;
+}

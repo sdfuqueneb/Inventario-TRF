@@ -7,6 +7,7 @@ import {
   InsertarAsignaciones,
   InsertarPermisos,
   InsertarUsuarios,
+  MostrarModulos,
 } from "../supabase/crudUsuarios";
 
 export const useUsuariosStore = create((set, get) => ({
@@ -16,6 +17,8 @@ export const useUsuariosStore = create((set, get) => ({
   UsuariosItemSelect: [],
   parametros: {},
   setParametros: (p) => set({ parametros: p }),
+
+  datamodulos:[],
 
   mostrarUsuarios: async (p) => {
     const { data, error } = await supabase
@@ -146,4 +149,10 @@ export const useUsuariosStore = create((set, get) => ({
     set({ dataUsuarios: response });
     return response ?? [];
   },
+
+  mostrarModulos: async () => {
+    const response = await MostrarModulos()
+    set ({datamodulos: response})
+    return response
+  }
 }));

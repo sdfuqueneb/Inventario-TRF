@@ -5,6 +5,7 @@ import { useUsuariosStore } from "../store/UsuariosStore";
 import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 
 export function Usuarios() {
+    const {mostrarModulos} = useUsuariosStore()
     const { mostrarUsuariosTodos, dataUsuarios } = useUsuariosStore(); 
     const { dataempresa } = useEmpresaStore();
     const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
@@ -13,6 +14,11 @@ export function Usuarios() {
         queryKey: ["Mostrar Usuarios", { id_empresa: empresaId }],
         queryFn: () => mostrarUsuariosTodos({ _id_empresa: empresaId }), 
         enabled: !!empresaId
+    });
+
+    const { data: datamodulos } = useQuery({
+        queryKey: ["mostrar modulos"],
+        queryFn: () => mostrarModulos()
     });
 
     if (isLoading) return <SpinnerLoader />;
