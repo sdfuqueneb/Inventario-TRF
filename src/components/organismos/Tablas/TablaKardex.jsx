@@ -23,7 +23,6 @@ export function TablaKardex({
   setAccion,
 }) {
   const [pagina, setPagina] = useState(1);
-  const [datas, setData] = useState(data);
   const [columnFilters, setColumnFilters] = useState([]);
 
   const { eliminarKardex } = useKardexStore();
@@ -179,19 +178,6 @@ export function TablaKardex({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     columnResizeMode: "onChange",
-    meta: {
-      updateData: (rowIndex, columnId, value) =>
-        setData((prev) =>
-          prev.map((row, index) =>
-            index === rowIndex
-              ? {
-                  ...prev[rowIndex],
-                  [columnId]: value,
-                }
-              : row
-          )
-        ),
-    },
   });
 
   if (data?.length === 0) return null;

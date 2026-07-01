@@ -28,9 +28,13 @@ export function KardexTemplate({ data }) {
   }
 
   function handleBuscar(e) {
-    const valor = e.target.value;
-    setBusqueda(valor);
-    setBuscador(valor);
+    setBusqueda(e.target.value);
+  }
+
+  function handleConfirmarBusqueda(e) {
+    if (e.key === 'Enter') {
+      setBuscador(busqueda);
+    }
   }
 
   return (
@@ -70,6 +74,7 @@ export function KardexTemplate({ data }) {
             placeholder="Buscar..."
             value={busqueda}
             onChange={handleBuscar}
+            onKeyDown={handleConfirmarBusqueda}
           />
         </SearchBar>
       </section>

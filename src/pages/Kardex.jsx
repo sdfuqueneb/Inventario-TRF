@@ -13,25 +13,20 @@ export function Kardex() {
     objeto.modulos?.nombre?.includes("Kardex")
   );
 
-  const { mostrarProductos, dataproductos, buscador, buscarProductos } =
-    useProductosStore();
+  const { mostrarProductos } = useProductosStore();
   const {
     mostrarKardex,
     buscarKardex,
     buscador: buscadorkardex,
+    datakardex,
   } = useKardexStore();
   const { dataempresa } = useEmpresaStore();
 
   const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id ?? null;
 
   useQuery({
-    queryKey: ["productos", empresaId, buscador],
-    queryFn: () => {
-      if (buscador) {
-        return buscarProductos({ descripcion: buscador, id_empresa: empresaId });
-      }
-      return mostrarProductos({ id_empresa: empresaId });
-    },
+    queryKey: ["productos", empresaId],
+    queryFn: () => mostrarProductos({ id_empresa: empresaId }),
     enabled: empresaId !== null && permisosListos && statePermiso,
   });
 
@@ -54,5 +49,5 @@ export function Kardex() {
   if (isLoading) return <SpinnerLoader />;
   if (error) return <span>Error al cargar los datos...</span>;
 
-  return <KardexTemplate data={dataproductos} />;
+  return <KardexTemplate data={datakardex} />;
 }
