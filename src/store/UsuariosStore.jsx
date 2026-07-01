@@ -23,6 +23,8 @@ export const useUsuariosStore = create((set, get) => ({
   datamodulos: [],
   datapermisosEdit: [],
   modulosConAcceso: DataModulosConfiguracion.map((m) => ({ ...m })),
+  datapermisos: [],
+  permisosListos: false,
 
   mostrarUsuarios: async (p) => {
     const { data, error } = await supabase
@@ -141,7 +143,7 @@ export const useUsuariosStore = create((set, get) => ({
   cargarPermisosEditar: async (id_usuario) => {
     set({ datapermisosEdit: [] });
     const permisos = await MostrarPermisos({ id_usuario });
-    set({ datapermisosEdit: permisos ?? [] });
+    set({ datapermisosEdit: permisos ?? []});
   },
 
   aplicarPermisosNavegacion: async (id_usuario) => {
@@ -158,7 +160,11 @@ export const useUsuariosStore = create((set, get) => ({
       return { ...modulo, state: tieneAcceso };
     });
 
-    set({ modulosConAcceso: modulosActualizados });
+    set({ 
+      modulosConAcceso: modulosActualizados, 
+      datapermisos: permisos ?? [],
+      permisosListos: true,
+    });
 
     return modulosActualizados;
   },

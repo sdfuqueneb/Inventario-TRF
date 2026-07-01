@@ -10,17 +10,41 @@ import { ContainerSelector } from "../../atomos/ContainerSelector";
 import { Selector } from "../Selector";
 import { useMarcaStore } from "../../../store/MarcaStore";
 import { useCategoriaStore } from "../../../store/CategoriaStore";
-import { useState, useEffect } from "react";
-import { Btnfiltro } from "../../moleculas/Btnfiltro";
-import { RegistrarMarca } from "./RegistrarMarca";
+import { useState, useEffect, useMemo } from "react"; 
 import { ListaGenerica } from "../ListaGenerica";
-import { RegistrarCategoria } from "./RegistrarCategoria";
+import { useUsuariosStore } from "../../../store/UsuariosStore";
 
 export function RegistrarProductos({ onClose, dataSelect, accion }) {
   const { InsertarProductos, editarProductos } = useProductosStore();
   const { dataempresa } = useEmpresaStore();
   const { marcaItemSelect, datamarca, setMarcaItemSelect } = useMarcaStore();
   const { CategoriaItemSelect, datacategoria, dataCategoria, setCategoriaItemSelect } = useCategoriaStore();
+  
+  const { dataUsuarios, mostrarUsuariosTodos } = useUsuariosStore(); 
+
+  const [asignacionItemSelect, setAsignacionItemSelect] = useState(null);
+  const [stateAsignacion, setStateAsignacion] = useState(false);
+
+  const idEmpresaActiva = dataempresa?.id ?? dataempresa?.[0]?.id;
+
+  const listaAsignaciones = useMemo(() => {
+    return [
+      { id: "bodega", descripcion: "Bodega" },
+      ...(dataUsuarios || []).map((u) => {
+        let nombreUsuario = "";
+        if (u.correo) {
+          nombreUsuario = u.correo.split("@")[0];
+        } else {
+          nombreUsuario = u.nombres || u.nombre || "Usuario sin nombre";
+        }
+
+        return { 
+          id: u.id, 
+          descripcion: nombreUsuario
+        };
+      })
+    ];
+  }, [dataUsuarios]);
 
   const lasCategorias = dataCategoria ?? datacategoria ?? [];
 
@@ -30,18 +54,28 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
   const { register, formState: { errors }, handleSubmit } = useForm();
 
   useEffect(() => {
+    const cargarUsuarios = async () => {
+      if (idEmpresaActiva && mostrarUsuariosTodos) {
+        await mostrarUsuariosTodos({ id_empresa: idEmpresaActiva });
+      }
+    };
+    cargarUsuarios();
+  }, [idEmpresaActiva, mostrarUsuariosTodos]);
+
+  useEffect(() => {
     if (accion !== "Editar") {
       setMarcaItemSelect(null);
       setCategoriaItemSelect(null);
+      setAsignacionItemSelect(null);
     }
-  }, [accion]);
+  }, [accion, setMarcaItemSelect, setCategoriaItemSelect]);
 
   async function insertar(data) {
-    const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
-    if (!empresaId) return;
+    if (!idEmpresaActiva) return;
 
     const idMarcaFinal = marcaItemSelect?.id ?? dataSelect?.id_marca;
     const idCategoriaFinal = CategoriaItemSelect?.id ?? dataSelect?.id_categoria;
+    const asignacionFinal = asignacionItemSelect?.descripcion || dataSelect?.asignacion || "Bodega";
 
     if (!idMarcaFinal || !idCategoriaFinal) {
       alert("Por favor, seleccione una Marca y una Categoría válidas antes de guardar.");
@@ -60,7 +94,8 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
         stock_minimo: parseFloat(data.stock_minimo) || 0,
         id_marca: Number(idMarcaFinal),
         id_categoria: Number(idCategoriaFinal),
-        id_empresa: Number(empresaId),
+        id_empresa: Number(idEmpresaActiva),
+        asignacion: asignacionFinal,
       });
     } else {
       await InsertarProductos({
@@ -68,12 +103,13 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
         descripcion: ConvertirCapitalize(data.nombre),
         modelo: data.modelo ?? "",
         id_categoria: Number(idCategoriaFinal),
-        id_empresa: Number(empresaId),
+        id_empresa: Number(idEmpresaActiva),
         id_marca: Number(idMarcaFinal),
         placa: data.placa ?? "",
         preciocompra: parseFloat(data.preciocompra) || 0,
         stock: parseFloat(data.stock) || 0,
         stock_minimo: parseFloat(data.stock_minimo) || 0,
+        asignacion: asignacionFinal,
       });
     }
     onClose();
@@ -168,7 +204,7 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
             <ContainerSelector>
               <label>Marca: </label>
               <Selector
-                funcion={() => { setStateMarca(!stateMarca); setStateCategoria(false); }}
+                funcion={() => { setStateMarca(!stateMarca); setStateCategoria(false); setStateAsignacion(false); }}
                 state={stateMarca} color="#2EC971"
                 texto1="💻" 
                 texto2={marcaItemSelect?.descripcion || dataSelect?.marca || "Seleccione una marca..."}
@@ -186,7 +222,7 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
             <ContainerSelector>
               <label>Categoría: </label>
               <Selector
-                funcion={() => { setStateCategoria(!stateCategoria); setStateMarca(false); }}
+                funcion={() => { setStateCategoria(!stateCategoria); setStateMarca(false); setStateAsignacion(false); }}
                 state={stateCategoria} color="#2EC971"
                 texto1="🏷️" 
                 texto2={CategoriaItemSelect?.descripcion || dataSelect?.categoria || "Seleccione una categoría..."}
@@ -197,6 +233,24 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
                   scroll="scroll"
                   data={lasCategorias}
                   funcion={(item) => { setCategoriaItemSelect(item); setStateCategoria(false); }}
+                />
+              )}
+            </ContainerSelector>
+
+            <ContainerSelector>
+              <label>Asignación: </label>
+              <Selector
+                funcion={() => { setStateAsignacion(!stateAsignacion); setStateMarca(false); setStateCategoria(false); }}
+                state={stateAsignacion} color="#2EC971"
+                texto1="👤" 
+                texto2={asignacionItemSelect?.descripcion || dataSelect?.asignacion || "Bodega"}
+              />
+              {stateAsignacion && (
+                <ListaGenerica
+                  setState={() => setStateAsignacion(false)}
+                  scroll="scroll"
+                  data={listaAsignaciones}
+                  funcion={(item) => { setAsignacionItemSelect(item); setStateAsignacion(false); }}
                 />
               )}
             </ContainerSelector>
@@ -270,42 +324,7 @@ const Container = styled.div`
         gap: 20px;
         display: flex;
         flex-direction: column;
-        .colorContainer {
-          .colorPickerContent {
-            padding-top: 15px;
-            min-height: 50px;
-          }
-        }
       }
     }
   }
-`;
-
-const ContentTitle = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 20px;
-  svg {
-    font-size: 25px;
-  }
-  input {
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 2px;
-    width: 40px;
-    font-size: 28px;
-  }
-`;
-
-const ContainerEmojiPicker = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
 `;

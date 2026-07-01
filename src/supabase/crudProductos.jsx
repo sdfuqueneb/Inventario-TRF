@@ -16,6 +16,7 @@ export async function InsertarProductos(p) {
                 preciocompra: p.preciocompra,
                 stock: p.stock,
                 stock_minimo: p.stock_minimo,
+                asignacion: p.asignacion,
             }
         ]);
 
@@ -44,6 +45,7 @@ export async function MostrarProductos(p) {
             preciocompra,
             id_categoria,
             id_empresa,
+            asignacion,
             marca:id_marca ( descripcion ),
             categorias:id_categoria ( descripcion, color )
         `)
@@ -59,12 +61,12 @@ export async function MostrarProductos(p) {
         ...prod,
         marca: prod.marca?.descripcion || "",
         categoria: prod.categorias?.descripcion || "",
-        color: prod.categorias?.color || ""
+        color: prod.categorias?.color || "",
+        asignacion: prod.asignacion || "Bodega"
     }));
 }
 
 export async function EliminarProductos(p) {
- 
     const { error } = await supabase
       .from("productos")
       .delete()
@@ -72,8 +74,8 @@ export async function EliminarProductos(p) {
     if (error) {
       alert("Error al eliminar: " + error.message);
     }
-
 }
+
 export async function EditarProductos(p) {
     const { error } = await supabase
       .from("productos")
@@ -82,8 +84,8 @@ export async function EditarProductos(p) {
     if (error) {
       alert("Error al editar Productos: " + error.message);
     }
-
 }
+
 export async function BuscarProductos(p) {
   const { data, error } = await supabase
         .from("productos")
@@ -99,6 +101,7 @@ export async function BuscarProductos(p) {
             preciocompra,
             id_categoria,
             id_empresa,
+            asignacion,
             marca:id_marca ( descripcion ),
             categorias:id_categoria ( descripcion, color )
         `)
@@ -114,6 +117,7 @@ export async function BuscarProductos(p) {
         ...prod,
         marca: prod.marca?.descripcion || "",
         categoria: prod.categorias?.descripcion || "",
-        color: prod.categorias?.color || ""
+        color: prod.categorias?.color || "",
+        asignacion: prod.asignacion || "Bodega"
     }));
 }

@@ -14,6 +14,7 @@ import { Categoria } from "../pages/Categoria";
 import { Productos } from "../pages/Productos";
 import { Usuarios } from "../pages/Usuarios";
 import { MostrarUsuarios } from "../supabase/crudUsuarios";
+import { Kardex } from "../pages/Kardex";
 
 export function MyRoutes() {
     const { user } = UserAuth();
@@ -57,6 +58,7 @@ export function MyRoutes() {
                 <Route path="/configurarcuenta/categoria" element={<Categoria />} />
                 <Route path="/configurarcuenta/productos" element={<Productos />} />
                 <Route path="/configurarcuenta/usuarios" element={<Usuarios />} />
+                <Route path="/kardex" element={<Kardex />} />
             </Route>
         </Routes>
     );

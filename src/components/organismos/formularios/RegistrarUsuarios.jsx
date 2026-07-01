@@ -275,7 +275,6 @@ const Container = styled.div`
     margin-top: 24px;
   }
 
-  /* Hint de campo bloqueado */
   .lock-hint {
     font-size: 0.75em;
     opacity: 0.5;

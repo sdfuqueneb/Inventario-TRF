@@ -37,6 +37,7 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
         }
     });
     }
+
     const columns = [
         {
             accessorKey: "descripcion",
@@ -80,6 +81,12 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
             cell: (info) => <span className="ContentCell">{info.getValue()}</span>
         },
         {
+            accessorKey: "asignacion",
+            header: "Asignación",
+            enableSorting: true,
+            cell: (info) => <span className="ContentCell">{info.getValue() || "Bodega"}</span>
+        },
+        {
             accessorKey: "acciones",
             header: "Acciones",
             enableSorting: false,
@@ -92,6 +99,7 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
             )
         }
     ]
+
     const table = useReactTable({
         data: data ?? [],
         columns,
@@ -100,6 +108,7 @@ export function TablaProductos({data, onEditar, SetopenRegistro, setdataSelect, 
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
+
     return(
     <Container>
         <table className="responsive-table">
