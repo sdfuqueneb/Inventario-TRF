@@ -24,7 +24,6 @@ export function RegistrarAdmin({ setState }) {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Obtener lista de empresas para el selector
   const { data: empresas = [], isLoading: loadingEmpresas } = useQuery({
     queryKey: ["empresas"],
     queryFn: async () => {
@@ -66,8 +65,6 @@ export function RegistrarAdmin({ setState }) {
       nombre:       ConvertirCapitalize(data.nombre),
       correo:       data.correo,
       tipo_usuario: data.tipo_usuario,
-      numero_doc:   data.numero_doc,
-      tipo_doc:     data.tipo_doc,
       telefono:     data.telefono,
       direccion:    data.direccion,
       id_empresa:   empresaId,
@@ -131,28 +128,6 @@ export function RegistrarAdmin({ setState }) {
               </InputText>
             </article>
 
-            {/* Tipo documento */}
-            <article>
-              <InputText icono={<FaIdCard />}>
-                <select className="form__field" {...register("tipo_doc", { required: true })}>
-                  <option value="CC">Cédula de Ciudadanía</option>
-                  <option value="CE">Cédula de Extranjería</option>
-                  <option value="PA">Pasaporte</option>
-                  <option value="NIT">NIT</option>
-                </select>
-                <label className="form__label">Tipo de Documento</label>
-              </InputText>
-            </article>
-
-            {/* Número documento */}
-            <article>
-              <InputText icono={<FaIdCard />}>
-                <input className="form__field" type="text" placeholder=""
-                  {...register("numero_doc")} />
-                <label className="form__label">Número de Documento</label>
-              </InputText>
-            </article>
-
             {/* Teléfono */}
             <article>
               <InputText icono={<FaPhone />}>
@@ -193,7 +168,6 @@ export function RegistrarAdmin({ setState }) {
               </InputText>
             </article>
 
-            {/* Tipo usuario — oculto, siempre "empleado" */}
             <input type="hidden" {...register("tipo_usuario")} value="empleado" />
 
             {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
@@ -267,13 +241,19 @@ const Container = styled.div`
     font-family: inherit;
     width: 100%;
     border: none;
-    border-bottom: 2px solid #9b9b9b;
+    /* Cambio aquí: Gris semitransparente */
+    border-bottom: 2px solid #DDE2E6; 
     outline: 0;
     font-size: 17px;
     color: #333;
     padding: 7px 0;
     background: transparent;
     transition: border-color 0.2s;
+
+    /* Opcional: Para que se vea mejor al hacer clic */
+    &:focus {
+      border-bottom: 2px solid #9b9b9b;
+    }
   }
 `;
 

@@ -7,39 +7,38 @@ import { variable } from "../../styles/variables";
 import { useCategoriaStore } from "../../store/CategoriaStore";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
-export function CategoriaTemplate({ data }) {
+export function CategoriaTemplate({ data = [] }) {
     const [state, setState] = useState(false);
     const [dataSelect, setDataSelect] = useState({});
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarCategoria, mostrarCategoria } = useCategoriaStore();
     const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
     const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
 
-    const handleBuscar = (e) => {
-        const valor = e.target.value;
-        setBusqueda(valor);
+    const categoriasFiltradas = useMemo(() => {
+        if (!busqueda.trim()) return data;
         
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (!empresaId) return;
+        const termino = busqueda.toLowerCase().trim();
 
-        if (!valor.trim()) {
-            mostrarCategoria({ id_empresa: empresaId });
-            return;
-        }
+        return data.filter((categoria) => {
+            if (!categoria) return false;
 
-        buscarCategoria({ id_empresa: empresaId, descripcion: valor });
+            return Object.values(categoria).some((valor) => {
+                if (valor === null || valor === undefined) return false;
+                return String(valor).toLowerCase().includes(termino);
+            });
+        });
+    }, [busqueda, data]);
+
+    const handleBuscar = (e) => {
+        setBusqueda(e.target.value);
     };
 
     const handleLimpiarBusqueda = () => {
         setBusqueda("");
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (empresaId) {
-            mostrarCategoria({ id_empresa: empresaId });
-        }
     };
 
     return (
@@ -88,7 +87,7 @@ export function CategoriaTemplate({ data }) {
                 </SearchBar>
                 <TableWrapper>
                     <TablaCategoria
-                        data={data}
+                        data={categoriasFiltradas}
                         onEditar={(Categoria) => {
                             setDataSelect(Categoria);
                             setAction("Editar");

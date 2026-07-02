@@ -25,7 +25,6 @@ export function ConfiguracionTemplate() {
         {modulosConAcceso.map((item, index) => (
           <Link
             to={item.state ? item.link : ""}
-            // Bloquea navegación si no tiene acceso
             onClick={(e) => { if (!item.state) e.preventDefault(); }}
             className={item.state ? "card" : "card false"}
             key={index}

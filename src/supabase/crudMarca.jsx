@@ -7,7 +7,6 @@ export async function InsertarMarca(p) {
             icon: "error",
             title: "Oops...",
             text: error.message,
-            footer: '<a href="">Agregue una nueva descripción</a>',
           });
     }
 }

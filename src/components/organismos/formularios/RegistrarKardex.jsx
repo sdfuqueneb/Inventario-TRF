@@ -1,21 +1,20 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { variable } from "../../../styles/variables";
-import { InputText } from "./InputText";
+import { InputText } from "../formularios/InputText";
 import { Btnsave} from "../../moleculas/Btnsave";
 import { useKardexStore } from "../../../store/KardexStore";
 import { ConvertirCapitalize } from "../../../utils/Conversiones";
 import { useForm } from "react-hook-form";
 import { useEmpresaStore } from "../../../store/EmpresaStore";
 export function RegistrarKardex({ onClose, dataSelect, accion }) {
-  const { insertarKardex, editarKardex } = useKardexStore();
+  const { InsertarKardex, editarKardex } = useKardexStore();
   const { dataempresa } = useEmpresaStore();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-
   async function insertar(data) {
     const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id;
 
@@ -25,21 +24,21 @@ export function RegistrarKardex({ onClose, dataSelect, accion }) {
     }
 
     const p = {
-      descripcion: ConvertirCapitalize(data.nombre),
-      id_empresa: empresaId,
+      _descripcion: ConvertirCapitalize(data.nombre),
+      _idempresa: empresaId,
     };
 
     if (accion === "Editar") {
       const pEditar = {
         id: dataSelect?.id, 
-        descripcion: p.descripcion,
-        id_empresa: p.id_empresa
+        descripcion: p._descripcion,
+        id_empresa: p._idempresa
       };
       
       await editarKardex(pEditar);
       onClose();
     } else {
-      await insertarKardex(p);
+      await InsertarKardex(p);
       onClose();
     }
   }

@@ -1,245 +1,111 @@
+import { useReactTable, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 import styled from "styled-components";
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
-import { useKardexStore } from "../../../store/KardexStore";
-import { Paginacion } from "./Paginacion";
 import Swal from "sweetalert2";
+import { useKardexStore } from "../../../store/KardexStore";
 import { variable } from "../../../styles/variables";
-import { useState } from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import { FaArrowsAltV } from "react-icons/fa";
-import { Device } from "../../../styles/breackpoints";
+import { Paginacion } from "./Paginacion";
+import { useState } from "react";
 
-export function TablaKardex({
-  data,
-  SetopenRegistro,
-  setdataSelect,
-  setAccion,
-}) {
-  const [pagina, setPagina] = useState(1);
-  const [columnFilters, setColumnFilters] = useState([]);
-
-  const { eliminarKardex } = useKardexStore();
-
-  function eliminar(p) {
-    Swal.fire({
-      title: "¿Estás seguro(a)(e)?",
-      text: "Una vez eliminado, ¡no podrá recuperar este registro!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si, eliminar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await eliminarKardex({ id: p });
-      }
+export function TablaKardex({data, onEditar, SetopenRegistro, setdataSelect, setAccion }) {
+    const [pagina, setPagina] = useState(1);
+    const {eliminarKardex} = useKardexStore();
+    const editar = (p) => onEditar(p)
+    const eliminar = (p) => {
+        if (p.descripcion === "Generica") {
+            Swal.fire ({
+                icon: "error",
+                title: "No se puede realizar esta acción",
+                text: "No se puede eliminar este registro al ser predeterminado del sistema.",
+            });
+        return;
+        }
+        Swal.fire({
+            title: "Estás seguro de eliminar este registro?",
+            text: "No podrás revertir esta acción!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then(async(result) => {
+        if (result.isConfirmed) {
+            await eliminarKardex({id:p.id})
+        }
     });
-  }
-
-  function editar(data) {
-    SetopenRegistro(true);
-    setdataSelect(data);
-    setAccion("Editar");
-  }
-
-  const columns = [
-    {
-      accessorKey: "descripcion",
-      header: "Producto",
-      cell: (info) => <span>{info.getValue()}</span>,
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+    }
+    const columns = [{
+        accessorKey: "descripcion",
+        header: "Descripción",
+        cell: (info) => ( <span data-title="Descripción" className="ContentCell"> {info.getValue()} </span> )
     },
     {
-      accessorKey: "fecha",
-      header: "Fecha",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Fecha" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "tipo",
-      header: "Tipo",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Tipo" className="ContentCell">
-          {info.getValue() == "salida" ? (
-            <Colorcontent color="#ed4d4d" className="contentCategoria">
-              {info.getValue()}
-            </Colorcontent>
-          ) : (
-            <Colorcontent color="#30c85b" className="contentCategoria">
-              {info.getValue()}
-            </Colorcontent>
-          )}
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "detalle",
-      header: "Detalle",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Detalle" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "nombres",
-      header: "Usuario",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Usuario" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "cantidad",
-      header: "Cantidad",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Cantidad" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "stock",
-      header: "Stock",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Stock" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-  ];
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      columnFilters,
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    columnResizeMode: "onChange",
-  });
-
-  if (data?.length === 0) return null;
-
-  return (
-    <>
-      <Container>
+        accessorKey: "acciones",
+        header: "Acciones",
+        enableSorting: false,
+        cell: (info) =>(
+                <ContentAccionesTabla 
+                    funcionEditar={() => editar(info.row.original)}
+                    funcionEliminar={() => eliminar(info.row.original)}
+                    className="ContentCell"
+                />)
+    }]
+    const table = useReactTable({
+        data: data ?? [],
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+    });
+    return(
+    <Container>
         <table className="responsive-table">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {header.column.columnDef.header}
-                    {header.column.getCanSort() && (
-                      <span
-                        style={{ cursor: "pointer" }}
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        <FaArrowsAltV />
-                      </span>
-                    )}
-                    {
-                      {
-                        asc: " 🔼",
-                        desc: " 🔽",
-                      }[header.column.getIsSorted()]
-                    }
-                    <div
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={`resizer ${
-                        header.column.getIsResizing() ? "isResizing" : ""
-                      }`}
-                    />
-                  </th>
+            <thead>
+                {
+                    table.getHeaderGroups().map((headerGroup) => (
+                        <tr key = {headerGroup.id}>
+                            {headerGroup.headers.map((header) => (
+                                <th key = {header.id}>
+                                    {header.column.columnDef.header}
+                                    {header.column.getCanSort() && (
+                                      <span style={{cursor: "pointer"}} onClick={header.column.getToggleSortingHandler()}>
+                                        <FaArrowsAltV/>
+                                      </span>
+                                    )}
+                                    {
+                                      {
+                                        asc: "⬆️",
+                                        desc: "⬇️"
+                                      }, [header.column.getIsSorted()]
+                                    }
+                                </th>
+                            ))}
+                        </tr>
+                    ))
+                }
+            </thead>
+            <tbody>
+                {table.getRowModel().rows.map((item) => (
+                    <tr key = {item.id}>
+                        {
+                            item.getVisibleCells().map((cell) => (
+                                <td key = {cell.id}>
+                                    {
+                                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                                    }
+                                </td>
+                            ))
+                        }
+                    </tr>
                 ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((item) => (
-              <tr key={item.id}>
-                {item.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+            </tbody>
         </table>
-        <Paginacion
-          table={table}
-          irinicio={() => table.setPageIndex(0)}
-          pagina={table.getState().pagination.pageIndex + 1}
-          setPagina={setPagina}
-          maximo={table.getPageCount()}
-        />
-      </Container>
-    </>
-  );
+        <Paginacion table={table} irinicio={() => table.setPageIndex(0)} pagina={table.getState().pagination.pageIndex+1} setPagina={setPagina} maximo={table.getPageCount()}/>
+    </Container>)
 }
 
 const Container = styled.div`
@@ -255,7 +121,7 @@ const Container = styled.div`
   }
   .responsive-table {
     width: 100%;
-    margin-bottom: 1.5em;
+    margin-bottom: 0;
     border-spacing: 0;
     @media (min-width: ${variable.bpbart}) {
       font-size: 0.9em;
@@ -381,18 +247,5 @@ const Container = styled.div`
         }
       }
     }
-  }
-`;
-
-const Colorcontent = styled.div`
-  color: ${(props) => props.color};
-  border-radius: 8px;
-  border: 1px dashed ${(props) => props.color};
-  text-align: center;
-  padding: 3px;
-  width: 70%;
-  font-weight: 700;
-  @media ${Device.tablet} {
-    width: 100%;
   }
 `;

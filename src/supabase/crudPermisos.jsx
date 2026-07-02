@@ -12,7 +12,6 @@ export async function InsertarPermisos(p) {
         icon: "error",
         title: "Oops...",
         text: "Error al insertar permisos "+ error.message,
-        footer: '<a href="">error</a>',
       });
     }
     

@@ -120,7 +120,7 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
       <div className="sub-contenedor">
         <div className="headers">
           <section>
-            <h1>{accion === "Editar" ? "Editar Producto" : "Registrar Producto"}</h1>
+            <h1>{accion === "Editar" ? "Editar Activo" : "Registrar Activo"}</h1>
           </section>
           <section>
             <span onClick={onClose}>x</span>
@@ -136,7 +136,7 @@ export function RegistrarProductos({ onClose, dataSelect, accion }) {
                   type="text" placeholder=""
                   {...register("nombre", { required: true })}
                 />
-                <label className="form__label">Tipo / Producto</label>
+                <label className="form__label">Tipo Activo</label>
                 {errors.nombre?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>

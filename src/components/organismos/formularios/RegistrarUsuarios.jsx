@@ -21,8 +21,6 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
       nombre:       dataSelect?.nombre       ?? "",
       correo:       dataSelect?.correo       ?? "",
       tipo_usuario: dataSelect?.tipo_usuario ?? "empleado",
-      numero_doc:   dataSelect?.numero_doc   ?? "",
-      tipo_doc:     dataSelect?.tipo_doc     ?? "CC",
       telefono:     dataSelect?.telefono     ?? "",
       direccion:    dataSelect?.direccion    ?? "",
     }
@@ -49,8 +47,6 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
           nombre:       ConvertirCapitalize(data.nombre),
           correo:       data.correo,
           tipo_usuario: data.tipo_usuario,
-          numero_doc:   data.numero_doc,
-          tipo_doc:     data.tipo_doc,
           telefono:     data.telefono,
           direccion:    data.direccion,
         },
@@ -62,8 +58,6 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
         nombre:       ConvertirCapitalize(data.nombre),
         correo:       data.correo,
         tipo_usuario: data.tipo_usuario,
-        numero_doc:   data.numero_doc,
-        tipo_doc:     data.tipo_doc,
         telefono:     data.telefono,
         direccion:    data.direccion,
         id_empresa:   empresaId,
@@ -126,26 +120,6 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
                   </InputText>
                 </article>
               )}
-
-              <article>
-                <InputText icono={<FaIdCard />}>
-                  <select className="form__field" {...register("tipo_doc", { required: true })}>
-                    <option value="CC">Cédula de Ciudadanía</option>
-                    <option value="CE">Cédula de Extranjería</option>
-                    <option value="PA">Pasaporte</option>
-                    <option value="NIT">NIT</option>
-                  </select>
-                  <label className="form__label">Tipo de Documento</label>
-                </InputText>
-              </article>
-
-              <article>
-                <InputText icono={<FaIdCard />}>
-                  <input className="form__field" type="text" placeholder=""
-                    {...register("numero_doc")} />
-                  <label className="form__label">Número de Documento</label>
-                </InputText>
-              </article>
 
               <article>
                 <InputText icono={<FaPhone />}>

@@ -1,53 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEmpresaStore } from "../store/EmpresaStore";
-import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
-import { useProductosStore } from "../store/ProductosStore";
 import { KardexTemplate } from "../components/templates/KardexTemplate";
+import { useEmpresaStore } from "../store/EmpresaStore";
 import { useKardexStore } from "../store/KardexStore";
-import { usePermisosStore } from "../store/PermisosStore";
+import { useUsuariosStore } from "../store/UsuariosStore";
+import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import { BloqueoPagina } from "../components/moleculas/BloqueoPagina";
 
 export function Kardex() {
-  const { datapermisos, permisosListos } = usePermisosStore();
-  const statePermiso = datapermisos.some((objeto) =>
-    objeto.modulos?.nombre?.includes("Kardex")
-  );
+    const { datapermisos, permisosListos } = useUsuariosStore();
+    const { mostrarKardex, dataKardex, buscarKardex, buscador } = useKardexStore();
+    const { dataempresa } = useEmpresaStore();
 
-  const { mostrarProductos } = useProductosStore();
-  const {
-    mostrarKardex,
-    buscarKardex,
-    buscador: buscadorkardex,
-    datakardex,
-  } = useKardexStore();
-  const { dataempresa } = useEmpresaStore();
+    const empresaId = dataempresa?.id;
+    const statePermiso = datapermisos.some(
+        (objeto) => objeto.modulos?.nombre?.includes("Kardex")
+    );
 
-  const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id ?? null;
+    const { isLoading, error } = useQuery({
+        queryKey: ["Mostrar Kardex", { id_empresa: empresaId }],
+        queryFn: () => mostrarKardex({ id_empresa: empresaId }),
+        enabled: !!empresaId && statePermiso
+    });
 
-  useQuery({
-    queryKey: ["productos", empresaId],
-    queryFn: () => mostrarProductos({ id_empresa: empresaId }),
-    enabled: empresaId !== null && permisosListos && statePermiso,
-  });
+    useQuery({
+        queryKey: ["Buscar Kardex", { id_empresa: empresaId, descripcion: buscador }],
+        queryFn: () => buscarKardex({ id_empresa: empresaId, descripcion: buscador }),
+        enabled: !!empresaId && statePermiso
+    });
 
-  const { isLoading, error } = useQuery({
-    queryKey: ["kardex", empresaId, buscadorkardex],
-    queryFn: () => {
-      if (buscadorkardex) {
-        return buscarKardex({ buscador: buscadorkardex, id_empresa: empresaId });
-      }
-      return mostrarKardex({ id_empresa: empresaId });
-    },
-    enabled: empresaId !== null && permisosListos && statePermiso,
-  });
+    if (!permisosListos) return <SpinnerLoader />;
+    if (!statePermiso) return <BloqueoPagina modulo="Kardex" />;
+    if (isLoading) return <SpinnerLoader />;
+    if (error) return <span>Error</span>;
 
-  if (!permisosListos) return <SpinnerLoader />;
-  if (!statePermiso) return <BloqueoPagina modulo="Kardex" />;
-  
-  if (empresaId === null) return <SpinnerLoader />;
-  
-  if (isLoading) return <SpinnerLoader />;
-  if (error) return <span>Error al cargar los datos...</span>;
-
-  return <KardexTemplate data={datakardex} />;
+    return <KardexTemplate data={dataKardex} />;
 }

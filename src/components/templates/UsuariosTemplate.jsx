@@ -8,7 +8,7 @@ import { useUsuariosStore } from "../../store/UsuariosStore";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
 export function UsuariosTemplate({ data }) {
-    const { buscarUsuarios, mostrarUsuariosTodos, setParametros, dataUsuarios } = useUsuariosStore();
+    const { buscarUsuarios, mostrarUsuariosTodos, setParametros, dataUsuarios = [] } = useUsuariosStore();
     const { dataempresa } = useEmpresaStore();
     const [state, setState] = useState(false);
     const [dataSelect, setDataSelect] = useState({});
@@ -26,24 +26,27 @@ export function UsuariosTemplate({ data }) {
         return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
     }, [empresaId]);
 
+    const usuariosFiltrados = useMemo(() => {
+        if (!busqueda.trim()) return dataUsuarios;
+        
+        const termino = busqueda.toLowerCase().trim();
+
+        return dataUsuarios.filter((usuario) => {
+            if (!usuario) return false;
+
+            return Object.values(usuario).some((valor) => {
+                if (valor === null || valor === undefined) return false;
+                return String(valor).toLowerCase().includes(termino);
+            });
+        });
+    }, [busqueda, dataUsuarios]);
+
     const handleBuscar = (e) => {
-        const valor = e.target.value;
-        setBusqueda(valor);
-        if (!empresaId) return;
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (!valor.trim()) {
-            mostrarUsuariosTodos({ _id_empresa: empresaId });
-            return;
-        }
-        debounceRef.current = setTimeout(() => {
-            buscarUsuarios({ id_empresa: empresaId, buscador: valor });
-        }, 400);
+        setBusqueda(e.target.value);
     };
 
     const handleLimpiarBusqueda = () => {
         setBusqueda("");
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (empresaId) mostrarUsuariosTodos({ _id_empresa: empresaId });
     };
 
     return (
@@ -93,13 +96,13 @@ export function UsuariosTemplate({ data }) {
                 </SearchBar>
                 
                 <TableWrapper>
-                <TablaUsuarios
-                    data={dataUsuarios}
-                    onEditar={(usuario) => {
-                        setDataSelect(usuario);
-                        setAction("Editar");
-                        SetopenRegistro(true);
-                    }}
+                    <TablaUsuarios
+                        data={usuariosFiltrados}
+                        onEditar={(usuario) => {
+                            setDataSelect(usuario);
+                            setAction("Editar");
+                            SetopenRegistro(true);
+                        }}
                     />
                 </TableWrapper>
             </div>

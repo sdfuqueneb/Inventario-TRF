@@ -7,39 +7,38 @@ import { variable } from "../../styles/variables";
 import { useMarcaStore } from "../../store/MarcaStore";
 import { useEmpresaStore } from "../../store/EmpresaStore";
 
-export function MarcaTemplate({ data }) {
+export function MarcaTemplate({ data = [] }) {
     const [state, setState] = useState(false);
     const [dataSelect, setDataSelect] = useState({});
     const [action, setAction] = useState("");
     const [openRegistro, SetopenRegistro] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const { buscarMarca, mostrarMarca } = useMarcaStore();
     const { dataempresa } = useEmpresaStore();
 
     const handleSetState = useCallback(() => setState(prev => !prev), []);
     const stateConfig = useMemo(() => ({ state, setState: handleSetState }), [state, handleSetState]);
 
-    const handleBuscar = (e) => {
-        const valor = e.target.value;
-        setBusqueda(valor);
+    const marcasFiltradas = useMemo(() => {
+        if (!busqueda.trim()) return data;
         
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (!empresaId) return;
+        const termino = busqueda.toLowerCase().trim();
 
-        if (!valor.trim()) {
-            mostrarMarca({ id_empresa: empresaId });
-            return;
-        }
-    
-        buscarMarca({ id_empresa: empresaId, descripcion: valor });
+        return data.filter((marca) => {
+            if (!marca) return false;
+
+            return Object.values(marca).some((valor) => {
+                if (valor === null || valor === undefined) return false;
+                return String(valor).toLowerCase().includes(termino);
+            });
+        });
+    }, [busqueda, data]);
+
+    const handleBuscar = (e) => {
+        setBusqueda(e.target.value);
     };
 
     const handleLimpiarBusqueda = () => {
         setBusqueda("");
-        const empresaId = dataempresa?.id ?? dataempresa?.[0]?.id; 
-        if (empresaId) {
-            mostrarMarca({ id_empresa: empresaId });
-        }
     };
 
     return (
@@ -88,7 +87,7 @@ export function MarcaTemplate({ data }) {
                 </SearchBar>
                 <TableWrapper>
                     <TablaMarca
-                        data={data}
+                        data={marcasFiltradas}
                         onEditar={(marca) => {
                             setDataSelect(marca);
                             setAction("Editar");
@@ -181,7 +180,7 @@ const SearchBar = styled.div`
         svg { font-size: 18px; }
     }
 
-    input {
+input {
         flex: 1;
         border: none;
         background: transparent;
